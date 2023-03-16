@@ -37,7 +37,10 @@ nyt_leaderboard <- cbind(nyt_table_names,nyt_table_ranks) |>
   mutate(date = today(tzone = "America/Chicago"))
 nyt_leaderboard
 
-write_csv(x = nyt_leaderboard,
-          file = "leaderboard.csv",
-          append = TRUE)
+old_csv <- read_csv("leaderboard.csv")
 
+if (nrow(old_csv) < nrow(nyt_leaderboard)) {
+  write_csv(x = nyt_leaderboard,
+            file = "leaderboard.csv",
+            append = TRUE)
+}
