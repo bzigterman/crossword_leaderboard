@@ -3,8 +3,8 @@ name: scraper
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * 1-5'
-    - cron: '0 22 * * 0,6'
+    - cron: '0 1 * * 2-6'
+    - cron: '0 21 * * 6,0'
   push:
     paths:
       - 'scraper.R'
