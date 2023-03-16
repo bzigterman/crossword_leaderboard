@@ -5,14 +5,18 @@ library(slackr)
 
 webhook_url <- Sys.getenv("SLACK_TEST_URL")
 
-create_config_file(
-  filename = "~/.slackr",
+# create_config_file(
+#   filename = "~/.slackr",
+#   token = Sys.getenv("SLACK_TOKEN"),
+#   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
+#   channel = "#test"
+# )
+
+slackr_setup(
   token = Sys.getenv("SLACK_TOKEN"),
   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
   channel = "#test"
 )
-
-slackr_setup()
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
