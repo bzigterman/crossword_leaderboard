@@ -12,7 +12,7 @@ create_config_file(
   channel = "#test"
 )
 
-slackr_setup(channel = '#test', incoming_webhook_url = webhook_url)
+#slackr_setup(channel = '#test', incoming_webhook_url = webhook_url)
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
