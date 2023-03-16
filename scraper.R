@@ -10,6 +10,13 @@ nyt <- GET(url,
 )
 nyt_content <- content(nyt)
 
+nyt_crossword_date <- read_html(nyt) |> 
+  html_element(".lbd-type__date") |> 
+  html_text2() |> 
+  mdy(tz = "America/Chicago")
+
+today <- today(tzone = "America/Chicago")
+
 nyt_leaderboard <- read_html(nyt) |> 
   html_elements(".lbd-board__items") |> 
   html_elements(".lbd-score") |> 
@@ -31,7 +38,8 @@ nyt_leaderboard_text1 <- nyt_leaderboard |>
   select(nametime)
 Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
 
-slackr_bot(Results,
-           incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
-
+if (nyt_crossword_date == today) {
+  slackr_bot(Results,
+             incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
+}
 
