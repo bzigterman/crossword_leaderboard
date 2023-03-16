@@ -11,12 +11,12 @@ webhook_url <- Sys.getenv("SLACK_TEST_URL")
 #   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
 #   channel = "#test"
 # )
-
-slackr_setup(
-  token = Sys.getenv("SLACK_TOKEN"),
-  incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
-  channel = "#test"
-)
+# 
+# slackr_setup(
+#   token = Sys.getenv("SLACK_TOKEN"),
+#   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
+#   channel = "#test"
+# )
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -31,9 +31,9 @@ nyt_leaderboard <- read_html(nyt) |>
   html_text2() |> 
   as_tibble() |> 
   separate_wider_delim(cols = value, delim = "\n", names = c("rank",
-                                                          "blank",
-                                                          "name",
-                                                          "blank2","time")) |> 
+                                                             "blank",
+                                                             "name",
+                                                             "blank2","time")) |> 
   select(rank,name,time) |> 
   mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
   mutate(date = today(tzone = "America/Chicago")) |> 
@@ -44,8 +44,14 @@ nyt_leaderboard_text1 <- nyt_leaderboard |>
   select(name,time) |> 
   mutate(nametime = paste0(name,": ",time,"\n")) |> 
   select(nametime)
-nyt_leaderboard_text <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
-slackr_bot(nyt_leaderboard_text)
+Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
+slackr_bot(
+  incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
+  Results)
+# POST(url = webhook_url,
+#      encode = "json",
+#      body = "Results")
+
 
 # old_csv <- read_csv("leaderboard.csv")
 # 
