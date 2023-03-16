@@ -34,10 +34,4 @@ Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")
 slackr_bot(Results,
            incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
 
-# old_csv <- read_csv("leaderboard.csv")
-# 
-# if (nrow(old_csv) < nrow(nyt_leaderboard)) {
-#   write_csv(x = nyt_leaderboard,
-#             file = "leaderboard.csv",
-#             append = TRUE)
-# }
+
