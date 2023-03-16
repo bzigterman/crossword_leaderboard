@@ -32,7 +32,8 @@ nyt_leaderboard <- read_html(nyt) |>
                                                           "blank2","time")) |> 
   select(rank,name,time) |> 
   mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
-  mutate(date = today(tzone = "America/Chicago"))
+  mutate(date = today(tzone = "America/Chicago")) |> 
+  mutate(time = if_else(time == "Play Puzzle","--",time))
 
 nyt_leaderboard
 nyt_leaderboard_text1 <- nyt_leaderboard |> 
