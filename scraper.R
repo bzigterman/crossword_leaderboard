@@ -5,14 +5,14 @@ library(slackr)
 
 # webhook_url <- Sys.getenv("SLACK_TEST_URL")
 
-create_config_file(
-  filename = "~/.slackr",
-  token = Sys.getenv("SLACK_TOKEN"),
-  incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
-  channel = "#test"
-)
-
-slackr_setup()
+# create_config_file(
+#   filename = "~/.slackr",
+#   token = Sys.getenv("SLACK_TOKEN"),
+#   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
+#   channel = "#test"
+# )
+# 
+# slackr_setup()
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -41,13 +41,10 @@ nyt_leaderboard_text1 <- nyt_leaderboard |>
   mutate(nametime = paste0(name,": ",time,"\n")) |> 
   select(nametime)
 Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
-slackr_bot(
-  incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
-  Results)
-# POST(url = webhook_url,
-#      encode = "json",
-#      body = "Results")
+slackr_bot(Results)
 
+slackr_bot('Test message', 
+           incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
 
 # old_csv <- read_csv("leaderboard.csv")
 # 
