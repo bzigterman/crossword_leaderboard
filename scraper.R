@@ -41,8 +41,9 @@ nyt_leaderboard_text1 <- nyt_leaderboard |>
   mutate(nametime = paste0(name,": ",time,"\n")) |> 
   select(nametime)
 Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
+Sys.getenv("SLACK_TEST_URL")
 slackr_bot(Results)
-
+Sys.getenv("SLACK_TEST_URL")
 slackr_bot('Test message', 
            incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
 
