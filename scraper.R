@@ -12,8 +12,7 @@ create_config_file(
   channel = "#test"
 )
 
-slackr_setup(token = Sys.getenv("SLACK_TOKEN"),
-             channel = '#test',
+slackr_setup(channel = '#test',
              config_file = "~/.slackr",
              incoming_webhook_url = webhook_url)
 
