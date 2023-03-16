@@ -3,17 +3,6 @@ library(tidyverse)
 library(rvest)
 library(slackr)
 
-# webhook_url <- Sys.getenv("SLACK_TEST_URL")
-
-# create_config_file(
-#   filename = "~/.slackr",
-#   token = Sys.getenv("SLACK_TOKEN"),
-#   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
-#   channel = "#test"
-# )
-# 
-# slackr_setup()
-
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
 nyt <- GET(url,
@@ -44,9 +33,6 @@ Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")
 
 slackr_bot(Results,
            incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
-
-# slackr_bot('Test message', 
-#            incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
 
 # old_csv <- read_csv("leaderboard.csv")
 # 
