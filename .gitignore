@@ -1,7 +1,7 @@
 # History files
 .Rhistory
 .Rapp.history
-.Rproj
+*.Rproj
 # Session Data files
 .RData
 # User-specific files
@@ -27,4 +27,4 @@ vignettes/*.pdf
 *.knit.md
 # R Environment Variables
 .Renviron
-crossword_leaderboard.Rproj
+.slackr
