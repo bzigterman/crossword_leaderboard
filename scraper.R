@@ -3,14 +3,14 @@ library(tidyverse)
 library(rvest)
 library(slackr)
 
-#webhook_url <- Sys.getenv("SLACK_TEST_URL")
+# webhook_url <- Sys.getenv("SLACK_TEST_URL")
 
-# create_config_file(
-#   filename = "~/.slackr",
-#   token = Sys.getenv("SLACK_TOKEN"),
-#   incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
-#   channel = "#test"
-# )
+create_config_file(
+  filename = "~/.slackr",
+  token = Sys.getenv("SLACK_TOKEN"),
+  incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
+  channel = "#test"
+)
 # 
 # slackr_setup(
 #   token = Sys.getenv("SLACK_TOKEN"),
