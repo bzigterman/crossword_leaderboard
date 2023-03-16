@@ -41,4 +41,3 @@ write_csv(x = nyt_leaderboard,
           file = "leaderboard.csv",
           append = TRUE)
 
-
