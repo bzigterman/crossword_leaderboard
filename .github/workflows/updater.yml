@@ -1,0 +1,45 @@
+name: scraper
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1-5'
+    - cron: '0 22 * * 0,6'
+  push:
+    paths:
+      - 'scraper.R'
+
+jobs:
+  run-scraper:
+    runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      NYT_S: ${{ secrets.NYT_S }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: r-lib/actions/setup-r@v2
+          
+      - name: Restore R package cache
+        id: cache-r-packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('install-packages.R') }}-1
+          
+      - name: Install packages
+        if: steps.cache-r-packages.outputs.cache-hit != 'true'        
+        run: R -e 'source("install-packages.R", echo = TRUE)'
+        
+      - name: Download Parse and Update Leaderboard Data
+        run: Rscript scraper.R
+        
+      # Add new files in folder, commit along with other modified files, push
+      - name: Commit and push if it changed
+        run: |-
+          git config user.name "scraper"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Latest leaderboard data: ${timestamp}" || exit 0
+          git push
