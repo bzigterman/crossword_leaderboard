@@ -45,10 +45,10 @@ nyt_leaderboard_text1 <- nyt_leaderboard |>
 nyt_leaderboard_text <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
 slackr_bot(nyt_leaderboard_text)
 
-old_csv <- read_csv("leaderboard.csv")
-
-if (nrow(old_csv) < nrow(nyt_leaderboard)) {
-  write_csv(x = nyt_leaderboard,
-            file = "leaderboard.csv",
-            append = TRUE)
-}
+# old_csv <- read_csv("leaderboard.csv")
+# 
+# if (nrow(old_csv) < nrow(nyt_leaderboard)) {
+#   write_csv(x = nyt_leaderboard,
+#             file = "leaderboard.csv",
+#             append = TRUE)
+# }
