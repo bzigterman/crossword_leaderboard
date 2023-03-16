@@ -1,2 +1,2 @@
 # crossword_leaderboard
-Scraper of the NYT mini crossword leaderboard
+Scraper of the mini crossword leaderboard
