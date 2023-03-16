@@ -1,6 +1,18 @@
 library(httr)
 library(tidyverse)
 library(rvest)
+library(slackr)
+
+webhook_url <- Sys.getenv("SLACK_TEST_URL")
+
+create_config_file(
+  filename = "~/.slackr",
+  token = Sys.getenv("SLACK_TOKEN"),
+  incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"),
+  channel = "#test"
+)
+
+slackr_setup(channel = '#test', incoming_webhook_url = webhook_url)
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -8,34 +20,27 @@ nyt <- GET(url,
            set_cookies("NYT-S" = cookie)
 )
 nyt_content <- content(nyt)
-nyt_table_ranks <- read_html(nyt) |> 
+
+nyt_leaderboard <- read_html(nyt) |> 
   html_elements(".lbd-board__items") |> 
-  html_elements(".lbd-score__rank") |> 
+  html_elements(".lbd-score") |> 
   html_text2() |> 
   as_tibble() |> 
-  mutate(rank = value) |> 
-  select(rank)
-
-nyt_table_names <- read_html(nyt) |> 
-  html_elements(".lbd-board__items") |> 
-  html_elements(".lbd-score__name") |> 
-  html_text2() |> 
-  as_tibble() |> 
-  mutate(name = if_else(value == "Ben (you)","Ben",value)) |> 
-  select(name)
-
-nyt_table_times <- read_html(nyt) |> 
-  html_elements(".lbd-board__items") |> 
-  html_elements(".lbd-score__time") |> 
-  html_text2() |> 
-  as_tibble() |> 
-  mutate(time = value) |> 
-  select(time)
-
-nyt_leaderboard <- cbind(nyt_table_names,nyt_table_ranks) |> 
-  cbind(nyt_table_times) |> 
+  separate_wider_delim(cols = value, delim = "\n", names = c("rank",
+                                                          "blank",
+                                                          "name",
+                                                          "blank2","time")) |> 
+  select(rank,name,time) |> 
+  mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
   mutate(date = today(tzone = "America/Chicago"))
+
 nyt_leaderboard
+nyt_leaderboard_text1 <- nyt_leaderboard |> 
+  select(name,time) |> 
+  mutate(nametime = paste0(name,": ",time,"\n")) |> 
+  select(nametime)
+nyt_leaderboard_text <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
+slackr_bot(nyt_leaderboard_text)
 
 old_csv <- read_csv("leaderboard.csv")
 
