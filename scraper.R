@@ -3,7 +3,7 @@ library(tidyverse)
 library(rvest)
 library(slackr)
 
-webhook_url <- Sys.getenv("SLACK_TEST_URL")
+#webhook_url <- Sys.getenv("SLACK_TEST_URL")
 
 # create_config_file(
 #   filename = "~/.slackr",
