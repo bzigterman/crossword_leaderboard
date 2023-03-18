@@ -29,6 +29,6 @@ today <- today(tzone = "America/Chicago")
 
 if (final_results_date == today) {
   slackr_bot(Results,
-             incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
+             incoming_webhook_url = Sys.getenv("SLACK_CROSSWORD_URL"))
 }
 
