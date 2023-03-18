@@ -2,6 +2,7 @@ library(httr)
 library(tidyverse)
 library(rvest)
 library(slackr)
+library(waldo)
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -14,6 +15,9 @@ nyt_crossword_date <- read_html(nyt) |>
   html_element(".lbd-type__date") |> 
   html_text2() |> 
   mdy(tz = "America/Chicago")
+nyt_crossword_date_text <- strftime(x = nyt_crossword_date, 
+                                    tz = "US/Central",
+                                    format = "%B %d")
 
 today <- today(tzone = "America/Chicago")
 
@@ -28,7 +32,7 @@ nyt_leaderboard <- read_html(nyt) |>
                                                              "blank2","time")) |> 
   select(rank,name,time) |> 
   mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
-  mutate(date = today(tzone = "America/Chicago")) |> 
+  mutate(date = as_date( nyt_crossword_date, tz = "America/Chicago")) |> 
   mutate(time = if_else(time == "Play Puzzle","--",time))
 
 nyt_leaderboard
@@ -36,7 +40,17 @@ nyt_leaderboard_text1 <- nyt_leaderboard |>
   select(name,time) |> 
   mutate(nametime = paste0(name,": ",time,"\n")) |> 
   select(nametime)
-Results <- paste0(nyt_leaderboard_text1$nametime, collapse = "")  
+Results <- paste0(nyt_crossword_date_text,"\n",paste0(nyt_leaderboard_text1$nametime, collapse = ""))
+
+old_csv <- read_csv("leaderboard.csv")
+
+compare(old_csv,nyt_leaderboard)
+
+if (length(compare(old_csv,nyt_leaderboard))>0) {
+  write_csv(x = nyt_leaderboard,
+            file = "leaderboard.csv",
+            append = FALSE)
+}
 
 if (nyt_crossword_date == today) {
   slackr_bot(Results,
