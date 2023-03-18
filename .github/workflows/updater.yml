@@ -13,6 +13,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       NYT_S: ${{ secrets.NYT_S }}
       SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
+      SLACK_CROSSWORD_URL: ${{ secrets.SLACK_CROSSWORD_URL }}
     steps:
       - uses: actions/checkout@v3
       
