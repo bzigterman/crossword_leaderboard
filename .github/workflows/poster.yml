@@ -1,16 +1,18 @@
-name: scraper
+name: poster
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 1 * * 2-6'
+    - cron: '0 21 * * 6,0'
 
 jobs:
-  run-scraper:
+  run-poster:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      NYT_S: ${{ secrets.NYT_S }}
+      SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
+      SLACK_CROSSWORD_URL: ${{ secrets.SLACK_CROSSWORD_URL }}
     steps:
       - uses: actions/checkout@v3
       
@@ -27,13 +29,13 @@ jobs:
         if: steps.cache-r-packages.outputs.cache-hit != 'true'        
         run: R -e 'source("install-packages.R", echo = TRUE)'
         
-      - name: Download Parse and Update Leaderboard Data
-        run: Rscript scraper.R
+      - name: Post Leaderboard Data
+        run: Rscript poster.R
         
       # Add new files in folder, commit along with other modified files, push
       - name: Commit and push if it changed
         run: |-
-          git config user.name "scraper"
+          git config user.name "poster"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           timestamp=$(date -u)
