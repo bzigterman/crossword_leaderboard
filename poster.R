@@ -2,6 +2,8 @@ library(httr)
 library(tidyverse)
 library(slackr)
 library(googlesheets4)
+library(gargle)
+library(sodium)
 
 secret_read <- function(package, name) {
   path <- "inst/secret/token.json"
