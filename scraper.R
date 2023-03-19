@@ -3,6 +3,8 @@ library(tidyverse)
 library(rvest)
 library(googlesheets4)
 
+# Google API ----
+
 secret_read <- function(package, name) {
   if (!gargle:::secret_can_decrypt(package)) {
     gargle:::gargle_abort_secret(message = "Decryption not available.", package = package)
@@ -17,11 +19,11 @@ secret_read <- function(package, name) {
     nonce = gargle:::secret_nonce()
   )
 }
-
 json <- secret_read("crossword",name = "token.json")
-
 gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
          path = rawToChar(json))
+
+# Get leaderboard ----
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -66,6 +68,8 @@ Results <- paste0(nyt_crossword_date_text,
                   paste0(nyt_leaderboard_text1$nametime, 
                          collapse = ""))
 Results
+
+# write new results ----
 
 old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
                       col_types = "ccD")
