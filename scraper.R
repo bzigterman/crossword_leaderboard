@@ -18,9 +18,9 @@ token <- paste0("{
 ")
 
 write(x = token,
-      file = ".secrets/token.json",
+      file = "token.json",
       sep = "")
-gs4_auth(path = ".secrets/token.json",
+gs4_auth(path = "token.json",
          email = Sys.getenv("GOOGLE_EMAIL"))
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
