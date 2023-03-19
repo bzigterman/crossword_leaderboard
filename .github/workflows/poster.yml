@@ -8,7 +8,7 @@ on:
 
 jobs:
   run-poster:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
