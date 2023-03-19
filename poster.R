@@ -8,7 +8,7 @@ gs4_auth(
   email = Sys.getenv("GOOGLE_EMAIL")
 )
 
-old_csv <- read_sheet("1rn0YyBEZ12JdHF-FXrBnLI9nIY-S44hLopdoN4sCWJE",
+old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
                       col_types = "ccD")
 
 final_results <- old_csv |> 
