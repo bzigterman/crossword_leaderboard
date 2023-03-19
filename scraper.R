@@ -7,25 +7,25 @@ library(sodium)
 
 # Google API ----
 
-secret_pw_get <- function(package) {
+my_secret_pw_get <- function(package) {
   pw_name <- gargle:::secret_pw_name(package)
   pw <- Sys.getenv(pw_name, "")
 
   sodium::sha256(charToRaw(pw))
 }
 
-secret_read <- function(package, name) {
+my_secret_read <- function(package, name) {
   path <- "inst/secret/token.json"
   raw <- readBin(path, "raw", file.size(path))
   
   sodium::data_decrypt(
     bin = raw,
-    key = gargle:::secret_pw_get(package),
+    key = my_secret_pw_get(package),
     nonce = gargle:::secret_nonce()
   )
 }
 
-json <- secret_read("crossword",name = "token.json")
+json <- my_secret_read("crossword",name = "token.json")
 
 gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
          path = rawToChar(json))
