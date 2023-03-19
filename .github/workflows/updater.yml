@@ -11,6 +11,12 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       NYT_S: ${{ secrets.NYT_S }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      PRIVATE_KEY_ID: ${{ secrets.PRIVATE_KEY_ID }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_X509_CERT_URL: ${{ secrets.CLIENT_X509_CERT_URL }}
     steps:
       - uses: actions/checkout@v3
       
