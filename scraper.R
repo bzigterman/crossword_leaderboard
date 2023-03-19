@@ -6,10 +6,6 @@ library(googlesheets4)
 # Google API ----
 
 secret_read <- function(package, name) {
-  if (!gargle:::secret_can_decrypt(package)) {
-    gargle:::gargle_abort_secret(message = "Decryption not available.", package = package)
-  }
-  
   path <- "inst/secret/token.json"
   raw <- readBin(path, "raw", file.size(path))
   
@@ -19,7 +15,9 @@ secret_read <- function(package, name) {
     nonce = gargle:::secret_nonce()
   )
 }
+
 json <- secret_read("crossword",name = "token.json")
+
 gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
          path = rawToChar(json))
 
