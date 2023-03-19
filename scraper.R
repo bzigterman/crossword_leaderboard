@@ -3,6 +3,7 @@ library(tidyverse)
 library(rvest)
 library(googlesheets4)
 
+options(gargle_oauth_cache = ".secrets")
 gs4_auth(
   cache = ".secrets",
   token = Sys.getenv("GOOGLE_TOKEN"),
