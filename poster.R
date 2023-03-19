@@ -1,13 +1,11 @@
 library(httr)
 library(tidyverse)
 library(slackr)
-library(googlesheets4)
 
-gs4_auth(path = "inst/secret/token.json",
-         email = Sys.getenv("GOOGLE_EMAIL"))
-
-old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
-                      col_types = "ccD")
+old_csv <- read_csv("leaderboard.csv",
+                    col_types = cols(
+                      time = col_character()
+                    )) 
 
 final_results <- old_csv |> 
   filter(date == today(tzone = "America/Chicago"))
@@ -31,6 +29,5 @@ today <- today(tzone = "America/Chicago")
 
 if (final_results_date == today) {
   slackr_bot(Results,
-             incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
+             incoming_webhook_url = Sys.getenv("SLACK_CROSSWORD_URL"))
 }
-

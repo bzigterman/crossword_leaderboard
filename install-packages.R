@@ -5,4 +5,3 @@ install.packages("slackr")
 
 update.packages(ask = FALSE,
                 checkBuilt = TRUE)
-
