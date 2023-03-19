@@ -5,6 +5,6 @@ install.packages("httr")
 install.packages("rvest")
 install.packages("slackr")
 
-update.packages(ask = FALSE,
-                checkBuilt = TRUE)
+# update.packages(ask = FALSE,
+#                 checkBuilt = TRUE)
 
