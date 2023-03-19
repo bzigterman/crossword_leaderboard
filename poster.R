@@ -4,6 +4,7 @@ library(slackr)
 library(googlesheets4)
 
 gs4_auth(
+  cache = ".secrets",
   token = Sys.getenv("GOOGLE_TOKEN"),
   email = Sys.getenv("GOOGLE_EMAIL")
 )
