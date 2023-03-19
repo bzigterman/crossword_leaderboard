@@ -7,6 +7,13 @@ library(sodium)
 
 # Google API ----
 
+secret_pw_get <- function(package) {
+  pw_name <- gargle:::secret_pw_name(package)
+  pw <- Sys.getenv(pw_name, "")
+
+  sodium::sha256(charToRaw(pw))
+}
+
 secret_read <- function(package, name) {
   path <- "inst/secret/token.json"
   raw <- readBin(path, "raw", file.size(path))
