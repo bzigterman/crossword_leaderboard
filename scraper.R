@@ -1,6 +1,27 @@
 library(httr)
 library(tidyverse)
 library(rvest)
+library(googlesheets4)
+
+secret_read <- function(package, name) {
+  if (!gargle:::secret_can_decrypt(package)) {
+    gargle:::gargle_abort_secret(message = "Decryption not available.", package = package)
+  }
+  
+  path <- "inst/secret/token.json"
+  raw <- readBin(path, "raw", file.size(path))
+  
+  sodium::data_decrypt(
+    bin = raw,
+    key = gargle:::secret_pw_get(package),
+    nonce = gargle:::secret_nonce()
+  )
+}
+
+json <- secret_read("crossword",name = "token.json")
+
+gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
+         path = rawToChar(json))
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -46,10 +67,9 @@ Results <- paste0(nyt_crossword_date_text,
                          collapse = ""))
 Results
 
-old_csv <- read_csv("leaderboard.csv",
-                    col_types = cols(
-                      time = col_character()
-                    )) 
+old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
+                      col_types = "ccD")
+
 old_csv_today <- old_csv |> 
   filter(date == nyt_crossword_date)
 
@@ -57,7 +77,7 @@ new_csv <- old_csv |>
   filter(date != nyt_crossword_date) |> 
   full_join(nyt_leaderboard)
 
-write_csv(x = new_csv,
-          file = "leaderboard.csv",
-          append = FALSE)
+write_sheet(new_csv,
+            ss = Sys.getenv("SHEET_ID"),
+            sheet = "Sheet1")
 

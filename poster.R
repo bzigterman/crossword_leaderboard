@@ -1,11 +1,27 @@
 library(httr)
 library(tidyverse)
 library(slackr)
+library(googlesheets4)
 
-old_csv <- read_csv("leaderboard.csv",
-                    col_types = cols(
-                      time = col_character()
-                    )) 
+secret_read <- function(package, name) {
+  path <- "inst/secret/token.json"
+  raw <- readBin(path, "raw", file.size(path))
+  
+  sodium::data_decrypt(
+    bin = raw,
+    key = gargle:::secret_pw_get(package),
+    nonce = gargle:::secret_nonce()
+  )
+}
+
+json <- secret_read("crossword",name = "token.json")
+
+gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
+         path = rawToChar(json))
+
+
+old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
+                      col_types = "ccD")
 
 final_results <- old_csv |> 
   filter(date == today(tzone = "America/Chicago"))
@@ -29,5 +45,5 @@ today <- today(tzone = "America/Chicago")
 
 if (final_results_date == today) {
   slackr_bot(Results,
-             incoming_webhook_url = Sys.getenv("SLACK_CROSSWORD_URL"))
+             incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
 }
