@@ -3,7 +3,7 @@ library(tidyverse)
 library(slackr)
 library(googlesheets4)
 
-gs4_auth(path = "token.json",
+gs4_auth(path = "inst/secret/token.json",
          email = Sys.getenv("GOOGLE_EMAIL"))
 
 old_csv <- read_sheet(Sys.getenv("SHEET_ID"),

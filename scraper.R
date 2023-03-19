@@ -3,7 +3,7 @@ library(tidyverse)
 library(rvest)
 library(googlesheets4)
 
-gs4_auth(path = "token.json",
+gs4_auth(path = "inst/secret/token.json",
          email = Sys.getenv("GOOGLE_EMAIL"))
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
