@@ -19,6 +19,7 @@ jobs:
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_X509_CERT_URL: ${{ secrets.CLIENT_X509_CERT_URL }}
+      CROSSWORD_PASSWORD: ${{ secrets.CROSSWORD_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
       
