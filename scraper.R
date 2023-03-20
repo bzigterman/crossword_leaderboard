@@ -68,8 +68,7 @@ Results <- paste0(nyt_crossword_date_text,
 Results
 
 # write new results ----
-id <- googledrive:::as_id(Sys.getenv("SHEET_ID"))
-old_csv <- read_sheet(ss = id,
+old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Sheet1",
                       col_types = "ccD")
 
