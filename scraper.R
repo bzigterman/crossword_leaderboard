@@ -69,6 +69,7 @@ Results
 
 # write new results ----
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
+                      sheet = "Sheet1",
                       col_types = "ccD")
 
 old_csv_today <- old_csv |> 
