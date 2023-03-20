@@ -4,24 +4,19 @@ library(rvest)
 library(googlesheets4)
 library(gargle)
 library(sodium)
+library(googledrive)
 
 # Google API ----
+#gs4_deauth()
 op <- options(gargle_verbosity = "debug")
+gargle_verbosity()
 
-pw_name <- gargle:::secret_pw_name("crossword")
-pw <- Sys.getenv(pw_name)
+json <- Sys.getenv("TOKEN_KEY") |> 
+  stringr::str_replace_all(pattern = fixed("\\n"),
+                       replacement = "\n")
+dec <- rawToChar( jsonlite::base64_dec( json))
 
-path <- "inst/secret/token.json"
-raw <- readBin(path, "raw", file.size(path))
-
-json <- sodium::data_decrypt(
-  bin = raw,
-  key = sodium::sha256(charToRaw(pw)),
-  nonce = gargle:::secret_nonce()
-)
-
-gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
-         path = rawToChar(json))
+gs4_auth(path = dec)
 
 # Get leaderboard ----
 
