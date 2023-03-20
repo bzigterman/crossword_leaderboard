@@ -20,6 +20,7 @@ jobs:
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_X509_CERT_URL: ${{ secrets.CLIENT_X509_CERT_URL }}
       CROSSWORD_PASSWORD: ${{ secrets.CROSSWORD_PASSWORD }}
+      SHEET_ID: = ${{ secrets.SHEET_ID }}
     steps:
       - uses: actions/checkout@v3
       

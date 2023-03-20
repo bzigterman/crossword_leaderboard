@@ -66,7 +66,6 @@ Results <- paste0(nyt_crossword_date_text,
 Results
 
 # write new results ----
-
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       col_types = "ccD")
 
