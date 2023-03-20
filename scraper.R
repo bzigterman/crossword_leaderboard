@@ -1,6 +1,20 @@
 library(httr)
 library(tidyverse)
 library(rvest)
+library(googlesheets4)
+library(gargle)
+library(sodium)
+library(googledrive)
+
+# Google API ----
+json <- Sys.getenv("TOKEN_KEY") |> 
+  stringr::str_replace_all(pattern = fixed("\\n"),
+                       replacement = "\n")
+dec <- rawToChar( jsonlite::base64_dec( json))
+
+gs4_auth(path = dec)
+
+# Get leaderboard ----
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
 cookie <- Sys.getenv("NYT_S")
@@ -46,10 +60,11 @@ Results <- paste0(nyt_crossword_date_text,
                          collapse = ""))
 Results
 
-old_csv <- read_csv("leaderboard.csv",
-                    col_types = cols(
-                      time = col_character()
-                    )) 
+# write new results ----
+old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
+                      sheet = "Sheet1",
+                      col_types = "ccD")
+
 old_csv_today <- old_csv |> 
   filter(date == nyt_crossword_date)
 
@@ -57,7 +72,7 @@ new_csv <- old_csv |>
   filter(date != nyt_crossword_date) |> 
   full_join(nyt_leaderboard)
 
-write_csv(x = new_csv,
-          file = "leaderboard.csv",
-          append = FALSE)
+write_sheet(new_csv,
+            ss = Sys.getenv("SHEET_ID"),
+            sheet = "Sheet1")
 
