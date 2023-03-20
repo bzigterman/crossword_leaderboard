@@ -18,6 +18,7 @@ dec <- rawToChar( jsonlite::base64_dec( json))
 
 gs4_auth(path = dec)
 
+
 # Get leaderboard ----
 
 url <- "https://www.nytimes.com/puzzles/leaderboards/"
