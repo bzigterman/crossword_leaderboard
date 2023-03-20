@@ -4,7 +4,7 @@ library(rvest)
 library(googlesheets4)
 library(gargle)
 library(sodium)
-#library(googledrive)
+library(googledrive)
 
 # Google API ----
 gs4_deauth()
@@ -67,7 +67,7 @@ Results
 
 # write new results ----
 
-old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
+old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       col_types = "ccD")
 
 old_csv_today <- old_csv |> 
