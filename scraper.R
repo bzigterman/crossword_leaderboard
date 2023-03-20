@@ -4,10 +4,10 @@ library(rvest)
 library(googlesheets4)
 library(gargle)
 library(sodium)
-library(googledrive)
+#library(googledrive)
 
 # Google API ----
-#gs4_deauth()
+gs4_deauth()
 op <- options(gargle_verbosity = "debug")
 gargle_verbosity()
 
