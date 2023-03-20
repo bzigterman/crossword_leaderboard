@@ -4,25 +4,20 @@ library(slackr)
 library(googlesheets4)
 library(gargle)
 library(sodium)
+library(googledrive)
 
-secret_read <- function(package, name) {
-  path <- "inst/secret/token.json"
-  raw <- readBin(path, "raw", file.size(path))
-  
-  sodium::data_decrypt(
-    bin = raw,
-    key = gargle:::secret_pw_get(package),
-    nonce = gargle:::secret_nonce()
-  )
-}
+# Google API ----
+json <- Sys.getenv("TOKEN_KEY") |> 
+  stringr::str_replace_all(pattern = fixed("\\n"),
+                           replacement = "\n")
+dec <- rawToChar( jsonlite::base64_dec( json))
 
-json <- secret_read("crossword",name = "token.json")
+gs4_auth(path = dec)
 
-gs4_auth(email = Sys.getenv("GOOGLE_EMAIL"),
-         path = rawToChar(json))
+# read data ----
 
-
-old_csv <- read_sheet(Sys.getenv("SHEET_ID"),
+old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
+                      sheet = "Sheet1",
                       col_types = "ccD")
 
 final_results <- old_csv |> 
@@ -44,6 +39,8 @@ Results <- paste0(final_results_date_text,
 Results
 
 today <- today(tzone = "America/Chicago")
+
+# post data ----
 
 if (final_results_date == today) {
   slackr_bot(Results,

@@ -6,20 +6,13 @@ library(gargle)
 library(sodium)
 library(googledrive)
 
-
-
 # Google API ----
-gs4_deauth()
-op <- options(gargle_verbosity = "debug")
-gargle_verbosity()
-
 json <- Sys.getenv("TOKEN_KEY") |> 
   stringr::str_replace_all(pattern = fixed("\\n"),
                        replacement = "\n")
 dec <- rawToChar( jsonlite::base64_dec( json))
 
 gs4_auth(path = dec)
-
 
 # Get leaderboard ----
 
