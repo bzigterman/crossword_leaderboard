@@ -1,0 +1,47 @@
+name: tester
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * 2-6'
+    - cron: '0 21 * * 6,0'
+  push:
+    paths:
+      - 'tester.R'
+
+jobs:
+  run-tester:
+    runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
+      TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+      SHEET_ID: = ${{ secrets.SHEET_ID }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: r-lib/actions/setup-r@v2
+          
+      - name: Restore R package cache
+        id: cache-r-packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('install-packages.R') }}-1
+          
+      - name: Install packages
+        if: steps.cache-r-packages.outputs.cache-hit != 'true'        
+        run: R -e 'source("install-packages.R", echo = TRUE)'
+        
+      - name: Post Leaderboard Data
+        run: Rscript tester.R
+        
+      # Add new files in folder, commit along with other modified files, push
+      - name: Commit and push if it changed
+        run: |-
+          git config user.name "tester"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Latest leaderboard data: ${timestamp}" || exit 0
+          git push
