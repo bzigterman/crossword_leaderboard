@@ -20,10 +20,13 @@ old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Sheet1",
                       col_types = "ccD")
 
+today <- force_tz(today(tzone = "America/Chicago"),tzone = "America/Chicago")
+
 final_results <- old_csv |> 
-  filter(date == today(tzone = "America/Chicago"))
-final_results_date <- as_date( final_results$date[[1]],
-                               tz = "America/Chicago")
+  filter(date == today)
+final_results_date <- force_tz(as_date( final_results$date[[1]],
+                                        tz = "America/Chicago"),
+                               tzone = "America/Chicago")
 final_results_date_text <- strftime(x = final_results_date, 
                                     tz = "US/Central",
                                     format = "%A, %B %d")
@@ -37,8 +40,6 @@ Results <- paste0(final_results_date_text,
                   paste0(nyt_leaderboard_text1$nametime, 
                          collapse = ""))
 Results
-
-today <- today(tzone = "America/Chicago")
 
 # post data ----
 
