@@ -50,7 +50,7 @@ times <- read_html(nyt) |>
   select(!value)
 
 if (nrow(times) < nrow(names)) {
-  times <- times <- 
+  times <- times |>  
     add_row()
 }
 
