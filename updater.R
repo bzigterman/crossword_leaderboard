@@ -40,6 +40,7 @@ names <- read_html(nyt) |>
   as_tibble() |> 
   mutate(name = value) |> 
   select(!value)
+
 times <- read_html(nyt) |> 
   html_elements(".lbd-board__items") |> 
   html_elements(".lbd-score__time") |> 
@@ -48,28 +49,16 @@ times <- read_html(nyt) |>
   mutate(time = value) |> 
   select(!value)
 
+if (nrow(times) < nrow(names)) {
+  times <- times <- 
+    add_row()
+}
+
 nyt_leaderboard <- cbind(names,times) |> 
   mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
   mutate(date = as_date( nyt_crossword_date, tz = "America/Chicago")) |> 
-  mutate(time = if_else(time == "Play Puzzle","--",time)) |> 
-  filter(time != "--")
-
-
-# nyt_leaderboard <- read_html(nyt) |> 
-#   html_elements(".lbd-board__items") |> 
-#   html_elements(".lbd-score__name") |> 
-#   html_text2() |> 
-#   as_tibble() #|> 
-#   separate_wider_delim(cols = value, delim = "\n", names = c("rank",
-#                                                              "blank",
-#                                                              "name",
-#                                                              "blank2","time")) |> 
-#   select(rank,name,time) |> 
-#   mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
-#   mutate(date = as_date( nyt_crossword_date, tz = "America/Chicago")) |> 
-#   mutate(time = if_else(time == "Play Puzzle","--",time)) |> 
-#   filter(time != "--") |> 
-#   select(!rank)
+  mutate(time = if_else( is.na(time),"--",time)) |> 
+  filter(time != "--") 
 
 nyt_leaderboard
 nyt_leaderboard_text1 <- nyt_leaderboard |> 
