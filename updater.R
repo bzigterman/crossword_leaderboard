@@ -9,7 +9,7 @@ library(googledrive)
 # Google API ----
 json <- Sys.getenv("TOKEN_KEY") |> 
   stringr::str_replace_all(pattern = fixed("\\n"),
-                       replacement = "\n")
+                           replacement = "\n")
 dec <- rawToChar( jsonlite::base64_dec( json))
 
 gs4_auth(path = dec)
@@ -79,11 +79,14 @@ old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
 old_csv_today <- old_csv |> 
   filter(date == nyt_crossword_date)
 
-new_csv <- old_csv |> 
-  filter(date != nyt_crossword_date) |> 
-  full_join(nyt_leaderboard)
+diffs_from_sheets <- anti_join(old_csv_today,nyt_leaderboard)
+diffs_from_update <- anti_join(nyt_leaderboard,old_csv_today)
 
-write_sheet(new_csv,
-            ss = Sys.getenv("SHEET_ID"),
-            sheet = "Sheet1")
+new_csv <- full_join(old_csv, diffs_from_update) |> 
+  arrange(time) |> 
+  arrange(date)
 
+if (nrow(diffs_from_sheets) == 0 ) {
+  write_sheet(new_csv,
+              ss = Sys.getenv("SHEET_ID"),
+              sheet = "Sheet1")
