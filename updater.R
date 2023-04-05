@@ -90,3 +90,4 @@ if (nrow(diffs_from_sheets) == 0 ) {
   write_sheet(new_csv,
               ss = Sys.getenv("SHEET_ID"),
               sheet = "Sheet1")
+}
