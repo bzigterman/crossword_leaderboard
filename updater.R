@@ -86,10 +86,9 @@ new_csv <- full_join(old_csv, diffs_from_update) |>
   arrange(time) |> 
   arrange(date)
 
-if (nrow(diffs_from_sheets) == 0 ) {
-  write_sheet(new_csv,
-              ss = Sys.getenv("SHEET_ID"),
-              sheet = "Sheet1")
-}
+write_sheet(new_csv,
+            ss = Sys.getenv("SHEET_ID"),
+            sheet = "Sheet1")
+
 
 
