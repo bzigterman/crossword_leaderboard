@@ -32,8 +32,14 @@ nyt_leaderboard_text1 <- final_results |>
   mutate(period = ms(time)) |> 
   mutate(seconds = seconds(period)) |> 
   mutate(rank = min_rank(period)) |> 
-  select(name,time,rank) |> 
-  mutate(nametime = paste0(rank,". ",name,": ",time,"\n")) |> 
+  mutate(emoji_rank = case_when(
+    rank == 1 ~ ":first_place_medal:",
+    rank == 2 ~ ":second_place_medal:",
+    rank == 3 ~ ":third_place_medal:",
+    .default = ""
+  )) |> 
+  select(name,time,rank, emoji_rank) |> 
+  mutate(nametime = paste0(name,": ",time," ",emoji_rank,"\n")) |> 
   select(nametime)
 Results <- paste0("*",final_results_date_text,"*",
                   "\n",
@@ -51,3 +57,4 @@ if (final_results_date == today) {
        verbose()
   )
 }
+
