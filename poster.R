@@ -44,7 +44,7 @@ Results
 # post data ----
 
 if (final_results_date == today) {
-  POST(url =  Sys.getenv("SLACK_TEST_URL"),
+  POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
        encode = "json",
        body =  list(text = Results,
                     type = "mrkdwn"),
