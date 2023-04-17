@@ -86,6 +86,6 @@ Monthly_results
 
 if (month(fastest_time$date) == last_month) {
   slackr_bot(Monthly_results,
-             incoming_webhook_url = Sys.getenv("SLACK_TEST_URL"))
+             incoming_webhook_url = Sys.getenv("SLACK_CROSSWORD_URL"))
 }
 
