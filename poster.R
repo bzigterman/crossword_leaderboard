@@ -17,8 +17,8 @@ gs4_auth(path = dec)
 # read data ----
 
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
-                      sheet = "Sheet1",
-                      col_types = "ccD")
+                      sheet = "Form Responses 1",
+                      col_types = "TccD")
 
 today <- force_tz(today(tzone = "America/Chicago"),tzone = "America/Chicago")
 
@@ -35,6 +35,7 @@ nyt_leaderboard_text1 <- final_results |>
   mutate(period = ms(time)) |> 
   mutate(seconds = seconds(period)) |> 
   mutate(rank = min_rank(period)) |> 
+  arrange(period) |> 
   mutate(emoji_rank = case_when(
     rank == 1 ~ ":first_place_medal:",
     rank == 2 ~ ":second_place_medal:",

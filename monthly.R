@@ -14,8 +14,8 @@ gs4_auth(path = dec)
 # read data ----
 
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
-                      sheet = "Sheet1",
-                      col_types = "ccD")
+                      sheet = "Form Responses 1",
+                      col_types = "TccD")
 
 current_month <- month(now(tzone = "America/Chicago"))
 last_month <- current_month-1
@@ -57,7 +57,7 @@ fastest_time_date <- strftime(x = fastest_time$date,
                               tz = "US/Central",
                               format = "%A, %B %d")
 
-fastest_time_text <- paste0("*Fastest time*:\n",fastest_time$time,", by ",
+fastest_time_text <- paste0("*Fastest time*\n",fastest_time$time,", by ",
                             fastest_time$name," on ",
                             fastest_time_date)
 fastest_time_text

@@ -73,8 +73,8 @@ Results
 
 # write new results ----
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
-                      sheet = "Sheet1",
-                      col_types = "ccD")
+                      sheet = "Form Responses 1",
+                      col_types = "TccD")
 
 old_csv_today <- old_csv |> 
   filter(date == nyt_crossword_date)
@@ -88,7 +88,7 @@ new_csv <- full_join(old_csv, diffs_from_update) |>
 
 write_sheet(new_csv,
             ss = Sys.getenv("SHEET_ID"),
-            sheet = "Sheet1")
+            sheet = "Form Responses 1")
 
 
 
