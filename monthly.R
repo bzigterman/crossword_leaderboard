@@ -51,15 +51,15 @@ wins_text
 
 fastest_time <- old_with_ranks |> 
   arrange(period) |> 
-  head(n = 1)
-
-fastest_time_date <- strftime(x = fastest_time$date, 
+  head(n = 3) |> 
+  mutate(date_text = strftime(x = fastest_time$date, 
                               tz = "US/Central",
-                              format = "%A, %B %d")
+                              format = "%a, %b %d")) |> 
+  mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n"))
 
-fastest_time_text <- paste0("*Fastest time*\n",fastest_time$time,", by ",
-                            fastest_time$name," on ",
-                            fastest_time_date)
+fastest_time_text <- paste0("*Fastest times*\n",
+                            paste0(fastest_time$timenamedate, 
+                                   collapse = ""))
 fastest_time_text
 
 
@@ -80,16 +80,15 @@ avg_times_text <- paste0("*Average times*\n",
 avg_times_text
 
 Monthly_results <- paste0(wins_text,"\n",
-               fastest_time_text,"\n\n",
+               fastest_time_text,"\n",
                avg_times_text)
 Monthly_results
 
-if (month(fastest_time$date) == last_month) {
+if (month(fastest_time$date[[1]]) == last_month) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
        encode = "json",
        body =  list(text = Monthly_results,
-                    type = "mrkdwn"),
-       verbose()
+                    type = "mrkdwn")
   )
 }
 
