@@ -58,18 +58,7 @@ nyt_leaderboard <- cbind(names,times) |>
   mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
   mutate(date = as_date( nyt_crossword_date, tz = "America/Chicago")) |> 
   mutate(time = if_else( is.na(time),"--",time)) |> 
-  filter(time != "--") 
-
-nyt_leaderboard
-nyt_leaderboard_text1 <- nyt_leaderboard |> 
-  select(name,time) |> 
-  mutate(nametime = paste0(name,": ",time,"\n")) |> 
-  select(nametime)
-Results <- paste0(nyt_crossword_date_text,
-                  "\n",
-                  paste0(nyt_leaderboard_text1$nametime, 
-                         collapse = ""))
-Results
+  filter(time != "--")
 
 # write new results ----
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),

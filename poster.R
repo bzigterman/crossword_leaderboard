@@ -49,10 +49,8 @@ Results <- paste0("*",final_results_date_text,"*",
                   "\n",
                   paste0(nyt_leaderboard_text1$nametime, 
                          collapse = ""))
-Results
 
 # post data ----
-
 if (final_results_date == today) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
        encode = "json",

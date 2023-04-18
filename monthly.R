@@ -47,7 +47,6 @@ wins_text <- paste0("*",last_month_text," results*\n\n*Wins*",
                   "\n",
                   paste0(wins$name_text, 
                          collapse = ""))
-wins_text
 
 fastest_time <- old_with_ranks |> 
   arrange(period) |> 
@@ -60,7 +59,6 @@ fastest_time <- old_with_ranks |>
 fastest_time_text <- paste0("*Fastest times*\n",
                             paste0(fastest_time$timenamedate, 
                                    collapse = ""))
-fastest_time_text
 
 
 avg_times <- old_with_ranks |> 
@@ -77,12 +75,10 @@ avg_times <- old_with_ranks |>
 avg_times_text <- paste0("*Average times*\n",
                          paste0(avg_times$name_avg, 
                                 collapse = ""))
-avg_times_text
 
 Monthly_results <- paste0(wins_text,"\n",
                fastest_time_text,"\n",
                avg_times_text)
-Monthly_results
 
 if (month(fastest_time$date[[1]]) == last_month) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
