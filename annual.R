@@ -82,7 +82,7 @@ Annual_results <- paste0(wins_text,"\n",
                          avg_times_text)
 
 if (year(fastest_time$date[[1]]) == last_year) {
-  POST(url =  Sys.getenv("SLACK_TEST_URL"),
+  POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
        encode = "json",
        body =  list(text = Annual_results,
                     type = "mrkdwn")
