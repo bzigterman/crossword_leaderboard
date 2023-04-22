@@ -41,8 +41,11 @@ wins <- old_with_ranks |>
   count(name) |> 
   arrange(desc(n))|> 
   select(name,n) |> 
-  mutate(name_text = paste0(name,": ",n,"\n")) 
-
+  mutate(rank = min_rank(desc(n))) |> 
+  mutate(emoji_rank = if_else(rank == 1,":crown:",
+                              "")) |> 
+  mutate(name_text = paste0(name,": ",n," ",emoji_rank,"\n")) 
+  
 wins_text <- paste0("*",last_month_text," results*\n\n*Wins*",
                   "\n",
                   paste0(wins$name_text, 
@@ -51,7 +54,7 @@ wins_text <- paste0("*",last_month_text," results*\n\n*Wins*",
 fastest_time <- old_with_ranks |> 
   arrange(period) |> 
   head(n = 3) |> 
-  mutate(date_text = strftime(x = fastest_time$date, 
+  mutate(date_text = strftime(x = date, 
                               tz = "US/Central",
                               format = "%a, %b %d")) |> 
   mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n"))
