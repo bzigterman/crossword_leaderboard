@@ -69,8 +69,9 @@ avg_times <- old_with_ranks |>
   select(name, avg) |> 
   distinct() |> 
   arrange(avg) |> 
-  mutate(avg_minutes = floor(avg/60)) |> 
-  mutate(avg_text = paste0(avg_minutes,":",avg-(avg_minutes*60)) ) |> 
+  mutate(avg_seconds = seconds(avg)) |> 
+  mutate(avg_period = seconds_to_period(avg_seconds)) |> 
+  mutate(avg_text = sprintf("%d:%02d",minute(avg_period), second(avg_period))) |> 
   mutate(name_avg = paste0(name,": ",avg_text,"\n")) 
 
 avg_times_text <- paste0("*Average times*\n",
