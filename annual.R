@@ -104,6 +104,8 @@ streaks <- old_adding_streaks|>
   select(name, date, streak)
 
 old_csv_with_streaks <- full_join(old_csv, streaks) |> 
+  mutate(year = year(date)) |> 
+  filter(year == last_year) |> 
   arrange(desc(streak)) |> 
   mutate(rank = min_rank(desc(streak))) |> 
   filter(rank == 1) |> 
