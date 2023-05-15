@@ -78,9 +78,53 @@ avg_times_text <- paste0("*Average times*\n",
                          paste0(avg_times$name_avg, 
                                 collapse = ""))
 
+
+# longest streak ----
+old_adding_streaks <- old_csv |> 
+  mutate(period = ms(time)) |> 
+  mutate(seconds = seconds(period)) |> 
+  group_by(date) |> 
+  arrange(period) |> 
+  arrange(date) |> 
+  mutate(rank = min_rank(period)) |> 
+  ungroup() |> 
+  filter(rank == 1) |> 
+  select(name, date, rank) |> 
+  mutate(lagged = lag(name))  |> 
+  mutate(start = if_else(lagged == name,FALSE,TRUE)) 
+
+old_adding_streaks[1,"start"] <- TRUE
+
+streaks <- old_adding_streaks|> 
+  mutate(start_id = if_else(start,1,0)) |> 
+  mutate(streak_id = cumsum(start_id)) |> 
+  group_by(streak_id) |> 
+  mutate(streak = row_number()) |> 
+  ungroup() |> 
+  select(name, date, streak)
+
+old_csv_with_streaks <- full_join(old_csv, streaks) |> 
+  arrange(desc(streak)) |> 
+  mutate(rank = min_rank(desc(streak))) |> 
+  filter(rank == 1) |> 
+  mutate(date_text = strftime(x = date, 
+                              tz = "US/Central",
+                              format = "%a, %b %d")) |>
+  mutate(text = paste0(name,": ",streak,", ending on ",date_text,"\n"))
+
+longest_streak <- max(old_csv_with_streaks$streak)
+
+longest_streak_text <- if_else(longest_streak > 3,
+                               paste0("*Longest streak*\n",
+                                      paste0(old_csv_with_streaks$text, 
+                                             collapse = "")),
+                               "")
+
+
 Annual_results <- paste0(wins_text,"\n",
                          fastest_time_text,"\n",
-                         avg_times_text)
+                         avg_times_text,"\n",
+                         longest_streak_text)
 
 if (year(fastest_time$date[[1]]) == last_year) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
