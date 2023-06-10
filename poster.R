@@ -69,7 +69,7 @@ nyt_leaderboard_text1 <- final_results |>
     .default = ""
   )) |> 
   mutate(streak_text = if_else(rank == 1,
-                               if_else(streak > 3,
+                               if_else(streak > 2,
                                        paste0("(",streak,"-day streak)"),
                                        ""
                                )

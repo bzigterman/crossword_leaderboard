@@ -116,7 +116,7 @@ old_csv_with_streaks <- full_join(old_csv, streaks) |>
 
 longest_streak <- max(old_csv_with_streaks$streak)
 
-longest_streak_text <- if_else(longest_streak > 3,
+longest_streak_text <- if_else(longest_streak > 2,
                                paste0("*Longest streak*\n",
                                       paste0(old_csv_with_streaks$text, 
                                              collapse = "")),
