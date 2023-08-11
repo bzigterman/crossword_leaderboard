@@ -63,7 +63,10 @@ nyt_leaderboard <- cbind(names,times) |>
 # write new results ----
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Form Responses 1",
-                      col_types = "TccD")
+                      col_types = "TccD") |> 
+  mutate(time = if_else(substr(time,0,1) == ":",
+                        paste0("0",time),
+                        time)) 
 
 old_csv_today <- old_csv |> 
   filter(date == nyt_crossword_date)
