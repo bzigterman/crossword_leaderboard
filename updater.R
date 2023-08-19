@@ -66,9 +66,8 @@ old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       col_types = "TccD") |> 
   mutate(time = if_else(substr(time,0,1) == ":",
                         paste0("0",time),
-                        time))  |> 
-  select(name,time,date) |> 
-  distinct()
+                        time)) |> 
+  distinct(across(-Timestamp),.keep_all = TRUE)
 
 old_csv_today <- old_csv |> 
   filter(date == nyt_crossword_date)
