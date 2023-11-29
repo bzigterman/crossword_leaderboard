@@ -51,8 +51,17 @@ final_results_date <- force_tz(as_date( final_results$date[[1]],
 final_results_date_text <- strftime(x = final_results_date, 
                                     tz = "US/Central",
                                     format = "%A, %B %d")
+textgraph <- final_results |> 
+  mutate(period = ms(time)) |> 
+  mutate(seconds = seconds(period)) |> 
+  mutate(factor = 7/as.numeric(max(seconds) )) |> 
+  mutate(relative = as.integer( factor*as.numeric(seconds))) |> 
+  mutate(graph = strrep("━",relative)) |> 
+  mutate(blanks = 8-relative) |> 
+  mutate(blank = strrep("　",blanks)) |> 
+  mutate(chart = paste0(graph,blank))
 
-nyt_leaderboard_text1 <- final_results |> 
+nyt_leaderboard_text1 <- textgraph |> 
   mutate(period = ms(time)) |> 
   mutate(seconds = seconds(period)) |> 
   mutate(rank = min_rank(period)) |> 
@@ -70,9 +79,9 @@ nyt_leaderboard_text1 <- final_results |>
                                        )
                                ,
                                "")) |> 
-  select(name,time,rank, emoji_rank, streak_text) |> 
-  mutate(nametime = paste0(name,": ",time," ",emoji_rank," ",streak_text,"\n")) |> 
-  select(nametime)
+  select(name,time,rank, emoji_rank, streak_text,chart) |> 
+  mutate(nametime = paste0(chart,name,": ",time," ",emoji_rank," ",streak_text,"\n")) |> 
+  select(nametime) 
 Results <- paste0("*",final_results_date_text,"*",
                   "\n",
                   paste0(nyt_leaderboard_text1$nametime, 
