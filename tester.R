@@ -88,24 +88,55 @@ Results <- paste0("*",final_results_date_text,"*",
                          collapse = ""))
 
 # plot ----
-plot_data <- final_results |> 
+plot_data <- textgraph |> 
   mutate(period = ms(time)) |> 
-  mutate(seconds = seconds(period))
+  mutate(seconds = seconds(period)) |> 
+  mutate(rank = min_rank(period)) |> 
+  arrange(period) |> 
+  mutate(emoji_rank = case_when(
+    rank == 1 ~ "1st",
+    rank == 2 ~ "2nd",
+    rank == 3 ~ "3rd",
+    .default = ""
+  )) |> 
+  mutate(streak_text = if_else(rank == 1,
+                               if_else(streak > 3,
+                                       paste0("(",streak,"-day streak)"),
+                                       ""
+                               )
+                               ,
+                               "")) |> 
+ # select(name,time,rank, emoji_rank, streak_text,chart) |> 
+  mutate(name_medal = ifelse(rank <= 3,
+                             paste0(name,"\n",emoji_rank),
+                             name))
 
 plot <- ggplot(plot_data,
                aes(x = seconds,
-                   y = fct_rev(fct_reorder( name,seconds)))) +
+                   y = fct_rev(fct_reorder( name_medal,seconds)))) +
   geom_col(fill = "#6E92E0",
            color = "#6E92E0") +
+  geom_text(aes(x = seconds,
+                label = time),
+            hjust = 1.15,
+            color = "white") +
+  geom_text(aes(x = seconds,
+                label = streak_text),
+            hjust = -.1,
+            color = "black") +
   theme_minimal() +
   ylab(NULL) +
-  xlab(NULL)
+  xlab(NULL) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_blank()
+  )
 plot 
 
 file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
         bg = "white",
-        width = 4, height = 2.25,
+        width = 3, height = 3,
         dpi = 320)
 
 # post data ----
