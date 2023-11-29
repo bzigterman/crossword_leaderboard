@@ -135,7 +135,7 @@ plot <- ggplot(plot_data,
 plot 
 
 players <- length(plot_data$name)
-height = 3/7*players
+height = players*3/7
 
 file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
