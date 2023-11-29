@@ -120,4 +120,5 @@ slackr_upload(channels = "#test",
               title = "Leaderboard", 
               filename = file)
 
+file.remove(file)
 
