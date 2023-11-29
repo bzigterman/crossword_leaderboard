@@ -115,7 +115,8 @@ plot <- ggplot(plot_data,
                aes(x = seconds,
                    y = fct_rev(fct_reorder( name_medal,seconds)))) +
   geom_col(fill = "#6E92E0",
-           color = "#6E92E0") +
+           color = "#6E92E0",
+           width = .75) +
   geom_text(aes(x = seconds,
                 label = time),
             hjust = 1.15,
@@ -149,7 +150,7 @@ if (final_results_date == today) {
 }
 slackr_upload(channels = "#test",
               token = Sys.getenv("SLACK_TOKEN"),
-              title = "Leaderboard", 
+              title = final_results_date_text, 
               filename = file)
 
 if (file.exists("Rplots.pdf")) {
