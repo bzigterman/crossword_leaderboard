@@ -38,7 +38,7 @@ streaks <- old_adding_streaks|>
   mutate(streak = row_number()) |> 
   ungroup() |> 
   select(name, date, streak)
-  
+
 old_csv_with_streaks <- full_join(old_csv, streaks)
 
 today <- force_tz(today(tzone = "America/Chicago"),tzone = "America/Chicago")
@@ -76,16 +76,36 @@ nyt_leaderboard_text1 <- textgraph |>
                                if_else(streak > 3,
                                        paste0("(",streak,"-day streak)"),
                                        ""
-                                       )
+                               )
                                ,
                                "")) |> 
   select(name,time,rank, emoji_rank, streak_text,chart) |> 
-  mutate(nametime = paste0(chart,name,": ",time," ",emoji_rank," ",streak_text,"\n")) |> 
+  mutate(nametime = paste0(name,": ",time," ",emoji_rank," ",streak_text,"\n")) |> 
   select(nametime) 
 Results <- paste0("*",final_results_date_text,"*",
                   "\n",
                   paste0(nyt_leaderboard_text1$nametime, 
                          collapse = ""))
+
+# plot ----
+plot_data <- final_results |> 
+  mutate(period = ms(time)) |> 
+  mutate(seconds = seconds(period))
+
+plot <- ggplot(plot_data,
+               aes(x = seconds,
+                   y = fct_rev(fct_reorder( name,seconds)))) +
+  geom_col(fill = "#6E92E0",
+           color = "#6E92E0") +
+  theme_minimal() +
+  ylab(NULL) +
+  xlab(NULL)
+plot 
+
+file <- tempfile( fileext = ".png")
+ggsave( file, plot = plot, device = "png", 
+        width = 4, height = 2.25,
+        dpi = 320)
 
 # post data ----
 if (final_results_date == today) {
@@ -95,4 +115,8 @@ if (final_results_date == today) {
                     type = "mrkdwn")
   )
 }
+slackr_upload(channels = "#test",
+              token = Sys.getenv("SLACK_TOKEN"),
+              title = "Leaderboard", 
+              filename = file)
 
