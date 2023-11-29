@@ -104,6 +104,7 @@ plot
 
 file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
+        bg = "white"
         width = 4, height = 2.25,
         dpi = 320)
 
@@ -120,5 +121,8 @@ slackr_upload(channels = "#test",
               title = "Leaderboard", 
               filename = file)
 
-file.remove(file)
+if (file.exists("Rplots.pdf")) {
+  file.remove("Rplots.pdf")
+}
+
 
