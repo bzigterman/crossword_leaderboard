@@ -104,7 +104,7 @@ plot
 
 file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
-        bg = "white"
+        bg = "white",
         width = 4, height = 2.25,
         dpi = 320)
 
