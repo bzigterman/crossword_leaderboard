@@ -48,6 +48,47 @@ wins_text <- paste0("*Week ",last_week_text," wins*",
                     "\n",
                     paste0(wins$name_text, 
                            collapse = ""))
+# fastest times ----
+fastest_time <- old_with_ranks |> 
+  arrange(period) |> 
+  mutate(date_text = strftime(x = date, 
+                              tz = "US/Central",
+                              format = "%a, %b %d")) |> 
+  mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n")) |> 
+  mutate(minutes = as.numeric(seconds/60))
+
+top_three <- fastest_time |> 
+  head(n = 3) 
+
+fastest_time_text <- paste0("*Fastest times*\n",
+                            paste0(top_three$timenamedate, 
+                                   collapse = ""))
+
+plot <- ggplot(fastest_time,
+               aes(x = minutes,
+                   y = fct_rev( fct_reorder( name,minutes))))+
+  geom_boxplot(color = "#6E92E0",
+               fill = "#e2e9f8")+
+  geom_segment(aes(x = min(minutes),
+                   xend = max(minutes),
+                   y = 0,
+                   yend = 0),
+               color = "black") +
+  theme_minimal()+
+  ylab(NULL)+
+  ggtitle(paste0("Week ",last_week_text)) +
+  theme(panel.grid  = element_blank(),
+        axis.ticks.x = element_line() )
+plot
+
+players <- nrow( fastest_time |> distinct(name))
+height = players*3/7
+
+times_plot <- tempfile( fileext = ".png")
+ggsave( times_plot, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = height,
+        dpi = 320)
 
 if (week(old_with_ranks$date[[1]]) == last_week) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
@@ -56,4 +97,18 @@ if (week(old_with_ranks$date[[1]]) == last_week) {
                     type = "mrkdwn")
   )
 }
+
+if (month(fastest_time$date[[1]]) == last_month) {
+  POST(url =  Sys.getenv("SLACK_TEST_URL"),
+       encode = "json",
+       body =  list(text = wins_text,
+                    type = "mrkdwn")
+  )
+}
+
+slackr_upload(channels = "#test",
+              token = Sys.getenv("SLACK_TOKEN"),
+              title = paste0("Week ",last_week_text), 
+              filename = times_plot)
+
 
