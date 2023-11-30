@@ -5,6 +5,7 @@ install.packages("slackr")
 install.packages("gargle")
 install.packages("sodium")
 install.packages("jsonlite")
+install.packages('ggbeeswarm')
 
 update.packages(ask = FALSE,
                 checkBuilt = TRUE)

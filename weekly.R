@@ -70,8 +70,10 @@ fastest_time_text <- paste0("*Fastest times*\n",
 plot <- ggplot(fastest_time,
                aes(x = minutes,
                    y = fct_rev( fct_reorder( name,minutes))))+
-  geom_boxplot(color = "#6E92E0",
-               fill = "#e2e9f8")+
+  # geom_boxplot(color = "#6E92E0",
+  #              fill = "#e2e9f8")+
+  geom_point(color = "#6E92E0",
+                   size = 1)+
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
                    y = 0,

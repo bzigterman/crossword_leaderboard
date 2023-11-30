@@ -2,6 +2,7 @@ library(httr)
 library(tidyverse)
 library(slackr)
 library(googlesheets4)
+library(ggbeeswarm)
 
 # Google API ----
 json <- Sys.getenv("TOKEN_KEY") |> 
@@ -67,9 +68,21 @@ fastest_time_text <- paste0("*Fastest times*\n",
 
 plot <- ggplot(fastest_time,
                aes(x = minutes,
+                   #color = name,
                    y = fct_rev( fct_reorder( name,minutes))))+
-  geom_boxplot(color = "#6E92E0",
-               fill = "#e2e9f8")+
+  # geom_boxplot(color = "#6E92E0",
+  #              outlier.size = 0,
+  #              fill = "#e2e9f8")+
+  geom_quasirandom(color = "#6E92E0",
+                   size = .5)+
+  # geom_beeswarm(color = "#579C49",
+  #               method = "square",
+  #               cex = .5,
+  #               size = .2)+
+  #geom_violin()+
+  # geom_jitter(color = "#6E92E0",
+  #             height = .3,
+  #             size = .2) +
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
                    y = 0,
