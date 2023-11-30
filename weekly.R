@@ -115,3 +115,7 @@ slackr_upload(channels = "#test",
               filename = times_plot)
 
 
+if (file.exists("Rplots.pdf")) {
+  file.remove("Rplots.pdf")
+}
+
