@@ -131,7 +131,8 @@ plot <- ggplot(plot_data,
   theme(
     panel.grid = element_blank(),
     axis.text.x = element_blank()
-  )
+  )+
+  ggtitle(final_results_date_text)
 plot 
 
 players <- length(plot_data$name)
@@ -153,7 +154,7 @@ if (final_results_date == today) {
 }
 slackr_upload(channels = "#test",
               token = Sys.getenv("SLACK_TOKEN"),
-              title = final_results_date_text, 
+              title = "Leaderboard", 
               filename = file)
 
 if (file.exists("Rplots.pdf")) {
