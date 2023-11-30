@@ -106,7 +106,6 @@ plot_data <- textgraph |>
                                )
                                ,
                                "")) |> 
- # select(name,time,rank, emoji_rank, streak_text,chart) |> 
   mutate(name_medal = ifelse(rank <= 3,
                              paste0(name,"\n",emoji_rank),
                              name))
@@ -114,13 +113,19 @@ plot_data <- textgraph |>
 plot <- ggplot(plot_data,
                aes(x = seconds,
                    y = fct_rev(fct_reorder( name_medal,seconds)))) +
-  geom_col(fill = "#6E92E0",
-           color = "#6E92E0",
-           width = .75) +
+  geom_segment(aes(x = 0,
+                   xend = seconds,
+                   yend = fct_rev(fct_reorder( name_medal,seconds))),
+               color = "#6E92E0") +
+  geom_point(shape = 21,
+             fill = "#6E92E0",
+             color = "#6E92E0",
+             size = 1) +
   geom_text(aes(x = seconds,
                 label = time),
+            vjust = -.6,
             hjust = 1.15,
-            color = "white") +
+            color = "black") +
   geom_text(aes(x = seconds,
                 label = streak_text),
             hjust = -.1,
