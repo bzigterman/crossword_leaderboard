@@ -198,13 +198,13 @@ if (month(fastest_time$date[[1]]) == last_month) {
   )
 }
 
-slackr_upload(channels = "#test",
-              token = Sys.getenv("SLACK_TOKEN"),
-              title = paste0("Wins in ",last_month_text), 
-              filename = wins_plot)
+# slackr_upload(channels = "#test",
+#               token = Sys.getenv("SLACK_TOKEN"),
+#               title = paste0("Wins in ",last_month_text), 
+#               filename = wins_plot)
 
 slackr_upload(channels = "#test",
               token = Sys.getenv("SLACK_TOKEN"),
-              title = paste0("Fastest times in ",last_month_text), 
+              title = paste0("Times in ",last_month_text), 
               filename = times_plot)
 
