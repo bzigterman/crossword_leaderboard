@@ -45,24 +45,75 @@ wins <- old_with_ranks |>
   mutate(emoji_rank = if_else(rank == 1,":crown:",
                               "")) |> 
   mutate(name_text = paste0(name,": ",n," ",emoji_rank,"\n")) 
-  
+
 wins_text <- paste0("*",last_month_text," results*\n\n*Wins*",
-                  "\n",
-                  paste0(wins$name_text, 
-                         collapse = ""))
+                    "\n",
+                    paste0(wins$name_text, 
+                           collapse = ""))
+
+plot <- ggplot(wins,
+               aes(x = n,
+                   y = fct_reorder( name,n))) +
+  geom_col(fill = "#6E92E0",
+           color = "#6E92E0",
+           width = .75) +
+  geom_text(aes(x = n,
+                label = n),
+            hjust = 1.15,
+            color = "white") +
+  theme_minimal() +
+  ylab(NULL) +
+  xlab(NULL) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_blank()
+  )+
+  ggtitle(paste0("Wins in ",last_month_text))
+plot 
+
+players <- length(wins$name)
+height = players*3/7
+
+wins_plot <- tempfile( fileext = ".png")
+ggsave( wins_plot, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = height,
+        dpi = 320)
 
 # fastest times ----
 fastest_time <- old_with_ranks |> 
   arrange(period) |> 
-  head(n = 3) |> 
   mutate(date_text = strftime(x = date, 
                               tz = "US/Central",
                               format = "%a, %b %d")) |> 
   mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n"))
 
+top_three <- fastest_time |> 
+  head(n = 3) 
+
 fastest_time_text <- paste0("*Fastest times*\n",
-                            paste0(fastest_time$timenamedate, 
+                            paste0(top_three$timenamedate, 
                                    collapse = ""))
+
+plot <- ggplot(fastest_time,
+               aes(x = seconds/60,
+                   y = fct_rev( fct_reorder( name,seconds))))+
+  geom_boxplot(color = "#6E92E0")+
+  theme_minimal()+
+  ylab(NULL)+
+  xlab("minutes")+
+  theme(panel.grid  = element_blank())+
+  ggtitle(paste0("Times in ",last_month_text))
+plot
+
+players <- nrow( fastest_time |> distinct(name))
+height = players*3/7
+
+times_plot <- tempfile( fileext = ".png")
+ggsave( times_plot, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = height,
+        dpi = 320)
 
 
 # avg times ----
@@ -127,9 +178,9 @@ longest_streak_text <- if_else(longest_streak > 2,
 
 # combine ----
 Monthly_results <- paste0(wins_text,"\n",
-               fastest_time_text,"\n",
-               avg_times_text,"\n",
-               longest_streak_text)
+                          fastest_time_text,"\n",
+                          avg_times_text,"\n",
+                          longest_streak_text)
 
 if (month(fastest_time$date[[1]]) == last_month) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
@@ -138,4 +189,22 @@ if (month(fastest_time$date[[1]]) == last_month) {
                     type = "mrkdwn")
   )
 }
+
+if (month(fastest_time$date[[1]]) == last_month) {
+  POST(url =  Sys.getenv("SLACK_TEST_URL"),
+       encode = "json",
+       body =  list(text = Monthly_results,
+                    type = "mrkdwn")
+  )
+}
+
+slackr_upload(channels = "#test",
+              token = Sys.getenv("SLACK_TOKEN"),
+              title = paste0("Wins in ",last_month_text), 
+              filename = wins_plot)
+
+slackr_upload(channels = "#test",
+              token = Sys.getenv("SLACK_TOKEN"),
+              title = paste0("Fastest times in ",last_month_text), 
+              filename = times_plot)
 
