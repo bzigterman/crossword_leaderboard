@@ -79,7 +79,7 @@ plot <- ggplot(fastest_time,
                color = "black") +
   theme_minimal()+
   ylab(NULL)+
-  ggtitle(paste0(last_month_text," Times")) +
+  ggtitle(paste0(last_month_text)) +
   theme(panel.grid  = element_blank(),
         axis.ticks.x = element_line() )
 plot
