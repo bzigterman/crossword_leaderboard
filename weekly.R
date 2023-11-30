@@ -73,7 +73,8 @@ plot <- ggplot(fastest_time,
   # geom_boxplot(color = "#6E92E0",
   #              fill = "#e2e9f8")+
   geom_point(color = "#6E92E0",
-                   size = 1)+
+             alpha = .5,
+             size = 2.5)+
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
                    y = 0,

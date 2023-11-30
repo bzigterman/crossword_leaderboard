@@ -75,8 +75,10 @@ plot <- ggplot(fastest_time,
                aes(x = minutes,
                    y = fct_rev( fct_reorder( name,minutes))))+
   geom_quasirandom(color = "#6E92E0",
-                   size = .75)+
+                   alpha = .5,
+                   size = 1.75)+
   # geom_jitter(color = "#6E92E0",
+  #             alpha = .5,
   #              # cex = 1.5,
   #               #size = .25,
   #             height = .15)+
