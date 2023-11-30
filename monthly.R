@@ -14,10 +14,13 @@ gs4_auth(path = dec)
 # read data ----
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Form Responses 1",
-                      col_types = "TccD")
+                      col_types = "TccD") |> 
+  filter(date > today(tzone = "America/Chicago")-days(90))
 
 current_month <- month(now(tzone = "America/Chicago"))
-last_month <- current_month-1
+last_month <- if_else(current_month == 1,
+                      12,
+                      current_month-1)
 last_month_text <- strftime(x = ymd( paste("2023-", last_month,"-01")), 
                             tz = "US/Central",
                             format = "%B")

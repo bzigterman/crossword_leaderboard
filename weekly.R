@@ -15,10 +15,13 @@ gs4_auth(path = dec)
 
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Form Responses 1",
-                      col_types = "TccD")
+                      col_types = "TccD") |> 
+  filter(date > today(tzone = "America/Chicago")-days(90))
 
 current_week <- week(now(tzone = "America/Chicago"))
-last_week <- current_week-1
+last_week <- if_else(current_week == 1,
+                     53,
+                     current_week-1)
 last_week_text <- last_week
 
 old_with_ranks <- old_csv |>
