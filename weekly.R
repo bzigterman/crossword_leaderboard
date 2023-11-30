@@ -101,7 +101,7 @@ if (week(old_with_ranks$date[[1]]) == last_week) {
   )
 }
 
-if (month(fastest_time$date[[1]]) == last_month) {
+if (week(old_with_ranks$date[[1]]) == last_week) {
   POST(url =  Sys.getenv("SLACK_TEST_URL"),
        encode = "json",
        body =  list(text = wins_text,
