@@ -49,22 +49,52 @@ wins_text <- paste0("*",last_year_text," results*\n\n*Wins*",
                     paste0(wins$name_text, 
                            collapse = ""))
 
+# fastest times ----
 fastest_time <- old_with_ranks |> 
   arrange(period) |> 
-  head(n = 3) |> 
   mutate(date_text = strftime(x = date, 
                               tz = "US/Central",
                               format = "%a, %b %d")) |> 
-  mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n"))
+  mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n")) |> 
+  mutate(minutes = as.numeric(seconds/60))
+
+top_three <- fastest_time |> 
+  head(n = 3) 
 
 fastest_time_text <- paste0("*Fastest times*\n",
-                            paste0(fastest_time$timenamedate, 
+                            paste0(top_three$timenamedate, 
                                    collapse = ""))
+
+plot <- ggplot(fastest_time,
+               aes(x = minutes,
+                   y = fct_rev( fct_reorder( name,minutes))))+
+  geom_boxplot(color = "#6E92E0",
+               fill = "#e2e9f8")+
+  geom_segment(aes(x = min(minutes),
+                   xend = max(minutes),
+                   y = 0,
+                   yend = 0),
+               color = "black") +
+  theme_minimal()+
+  ylab(NULL)+
+  ggtitle(paste0(last_year_text)) +
+  theme(panel.grid  = element_blank(),
+        axis.ticks.x = element_line() )
+plot
+
+players <- nrow( fastest_time |> distinct(name))
+height = players*3/7
+
+times_plot <- tempfile( fileext = ".png")
+ggsave( times_plot, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = height,
+        dpi = 320)
 
 
 avg_times <- old_with_ranks |> 
   group_by(name) |> 
-  mutate(avg = round(mean(seconds))) |> 
+  mutate(avg = round(median(as.numeric( seconds))) )|> 
   ungroup() |> 
   select(name, avg) |> 
   distinct() |> 
@@ -74,7 +104,7 @@ avg_times <- old_with_ranks |>
   mutate(avg_text = sprintf("%d:%02d",minute(avg_period), second(avg_period))) |> 
   mutate(name_avg = paste0(name,": ",avg_text,"\n")) 
 
-avg_times_text <- paste0("*Average times*\n",
+avg_times_text <- paste0("*Median times*\n",
                          paste0(avg_times$name_avg, 
                                 collapse = ""))
 
@@ -135,4 +165,9 @@ if (year(fastest_time$date[[1]]) == last_year) {
                     type = "mrkdwn")
   )
 }
+
+slackr_upload(channels = "#test",
+              token = Sys.getenv("SLACK_TOKEN"),
+              title = paste0(last_year_text), 
+              filename = times_plot)
 
