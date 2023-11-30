@@ -62,7 +62,12 @@ fastest_time <- old_with_ranks |>
                               tz = "US/Central",
                               format = "%a, %b %d")) |> 
   mutate(timenamedate = paste0(time," by ",name," on ",date_text,"\n")) |> 
-  mutate(minutes = as.numeric(seconds/60))
+  mutate(minutes = as.numeric(seconds/60))|> 
+  mutate(weekday = wday(date)) |> 
+  mutate(saturday_check = case_when(
+    weekday == 7 ~ "Saturday",
+    .default = "Non-Saturday"
+  ))
 
 top_three <- fastest_time |> 
   head(n = 3) 
@@ -73,8 +78,10 @@ fastest_time_text <- paste0("*Fastest times*\n",
 
 plot <- ggplot(fastest_time,
                aes(x = minutes,
+                   fill = saturday_check,
                    y = fct_rev( fct_reorder( name,minutes))))+
   geom_quasirandom(color = "#6E92E0",
+                   shape = 21,
                    alpha = .5,
                    size = 1.75)+
   # geom_jitter(color = "#6E92E0",
@@ -93,6 +100,8 @@ plot <- ggplot(fastest_time,
                    y = 0,
                    yend = 0),
                color = "black") +
+  scale_fill_manual(values = c("#6E92E0","#E6B83D"),
+                    guide = NULL) +
   theme_minimal()+
   ylab(NULL)+
   ggtitle(paste0(last_month_text)) +

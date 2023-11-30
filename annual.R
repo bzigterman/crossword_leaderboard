@@ -78,12 +78,10 @@ plot <- ggplot(fastest_time,
   # geom_boxplot(color = "#6E92E0",
   #              outlier.size = 0,
   #              fill = "#e2e9f8")+
-  geom_quasirandom(#fill = "#6E92E0",
-    color = "#6E92E0",
-   #stroke = 1,
-    alpha = .5,
-    shape = 21,
-    size = 1)+
+  geom_quasirandom(color = "#6E92E0",
+                   alpha = .5,
+                   shape = 21,
+                   size = 1)+
   # geom_beeswarm(color = "#579C49",
   #               method = "square",
   #               cex = .5,
