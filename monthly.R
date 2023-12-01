@@ -84,17 +84,6 @@ plot <- ggplot(fastest_time,
                    shape = 21,
                    alpha = .5,
                    size = 1.75)+
-  # geom_jitter(color = "#6E92E0",
-  #             alpha = .5,
-  #              # cex = 1.5,
-  #               #size = .25,
-  #             height = .15)+
-  # geom_boxplot(color = "#6E92E0",
-  #              fill = "#e2e9f8")+
-  # geom_beeswarm(color = "#6E92E0",
-  #              cex = 1.5,
-  #             size = .35,
-  #             method = "hex")+
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
                    y = 0,
@@ -187,20 +176,12 @@ if (month(fastest_time$date[[1]]) == last_month) {
        body =  list(text = Monthly_results,
                     type = "mrkdwn")
   )
+  
+  slackr_upload(channels = "#crossword",
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = paste0(last_month_text), 
+                filename = times_plot)
 }
-
-if (month(fastest_time$date[[1]]) == last_month) {
-  POST(url =  Sys.getenv("SLACK_TEST_URL"),
-       encode = "json",
-       body =  list(text = Monthly_results,
-                    type = "mrkdwn")
-  )
-}
-
-slackr_upload(channels = "#test",
-              token = Sys.getenv("SLACK_TOKEN"),
-              title = paste0(last_month_text), 
-              filename = times_plot)
 
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")

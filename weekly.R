@@ -107,21 +107,12 @@ if (week(old_with_ranks$date[[1]]) == last_week) {
        body =  list(text = wins_text,
                     type = "mrkdwn")
   )
+  
+  slackr_upload(channels = "#crossword",
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = paste0("Week ",last_week_text), 
+                filename = times_plot)
 }
-
-if (week(old_with_ranks$date[[1]]) == last_week) {
-  POST(url =  Sys.getenv("SLACK_TEST_URL"),
-       encode = "json",
-       body =  list(text = wins_text,
-                    type = "mrkdwn")
-  )
-}
-
-slackr_upload(channels = "#test",
-              token = Sys.getenv("SLACK_TOKEN"),
-              title = paste0("Week ",last_week_text), 
-              filename = times_plot)
-
 
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")

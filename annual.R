@@ -183,12 +183,12 @@ if (year(fastest_time$date[[1]]) == last_year) {
        body =  list(text = Annual_results,
                     type = "mrkdwn")
   )
+  
+  slackr_upload(channels = "#crossword",
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = paste0(last_year_text), 
+                filename = times_plot)
 }
-
-slackr_upload(channels = "#test",
-              token = Sys.getenv("SLACK_TOKEN"),
-              title = paste0(last_year_text), 
-              filename = times_plot)
 
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
