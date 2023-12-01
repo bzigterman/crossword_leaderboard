@@ -117,12 +117,14 @@ plot <- ggplot(plot_data,
                    xend = seconds,
                    yend = fct_rev(fct_reorder( name,seconds))),
                color = "#6E92E0") +
-  geom_point(aes(color = as_factor( emoji_rank)),
+  geom_point(aes(color = as_factor( emoji_rank),
+                 fill = as_factor( emoji_rank)),
+             shape = 21,
              size = 4) +
   geom_text(aes(x = seconds,
                 label = emoji_rank),
             size = 2.5,
-            color = "black",
+            color = "white",
             alpha = .5)+
   geom_text(aes(x = seconds,
                 label = time),
@@ -140,6 +142,10 @@ plot <- ggplot(plot_data,
                      values = c("gold","#C0C0C0","#CD7F32",
                                 "#6E92E0"),
                      guide = NULL) +
+  scale_fill_manual(breaks = c("1","2","3",""),
+                    values = c("#ffc125","#acacac","#b8722d",
+                               "#6E92E0"),
+                    guide = NULL) +
   theme(
     panel.grid = element_blank(),
     axis.text.x = element_blank()
