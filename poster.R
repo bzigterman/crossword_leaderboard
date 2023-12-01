@@ -157,11 +157,11 @@ if (final_results_date == today) {
   #      body =  list(text = Results,
   #                   type = "mrkdwn")
   # )
-
-slackr_upload(channels = "#crossword",
-              token = Sys.getenv("SLACK_TOKEN"),
-              title = "Leaderboard", 
-              filename = file)
+  
+  slackr_upload(channels = "#crossword",
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = "Leaderboard", 
+                filename = file)
 }
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
