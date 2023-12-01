@@ -126,8 +126,8 @@ plot <- ggplot(plot_data,
             alpha = .5)+
   geom_text(aes(x = seconds,
                 label = time),
-            vjust = -.6,
-            hjust = 1.15,
+            vjust = -.5,
+            hjust = 1.25,
             color = "black") +
   geom_text(aes(x = seconds,
                 label = streak_text),

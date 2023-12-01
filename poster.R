@@ -120,8 +120,8 @@ plot <- ggplot(plot_data,
             alpha = .5)+
   geom_text(aes(x = seconds,
                 label = time),
-            vjust = -.6,
-            hjust = 1.15,
+            vjust = -.5,
+            hjust = 1.25,
             color = "black") +
   geom_text(aes(x = seconds,
                 label = streak_text),
@@ -158,7 +158,7 @@ if (final_results_date == today) {
   #                   type = "mrkdwn")
   # )
 
-slackr_upload(channels = "#test",
+slackr_upload(channels = "#crossword",
               token = Sys.getenv("SLACK_TOKEN"),
               title = "Leaderboard", 
               filename = file)
