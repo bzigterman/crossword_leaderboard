@@ -14,6 +14,7 @@ jobs:
       SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
       SLACK_CROSSWORD_URL: ${{ secrets.SLACK_CROSSWORD_URL }}
       TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
       SHEET_ID: = ${{ secrets.SHEET_ID }}
     steps:
       - uses: actions/checkout@v3
