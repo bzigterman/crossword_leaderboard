@@ -82,7 +82,7 @@ Results <- paste0("*",final_results_date_text,"*",
                          collapse = ""))
 
 # plot ----
-plot_data <- textgraph |> 
+plot_data <- final_results |> 
   mutate(period = ms(time)) |> 
   mutate(seconds = seconds(period)) |> 
   mutate(rank = min_rank(period)) |> 
