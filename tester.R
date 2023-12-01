@@ -94,9 +94,9 @@ plot_data <- textgraph |>
   mutate(rank = min_rank(period)) |> 
   arrange(period) |> 
   mutate(emoji_rank = case_when(
-    rank == 1 ~ "1st",
-    rank == 2 ~ "2nd",
-    rank == 3 ~ "3rd",
+    rank == 1 ~ "1",
+    rank == 2 ~ "2",
+    rank == 3 ~ "3",
     .default = ""
   )) |> 
   mutate(streak_text = if_else(rank == 1,
@@ -112,15 +112,18 @@ plot_data <- textgraph |>
 
 plot <- ggplot(plot_data,
                aes(x = seconds,
-                   y = fct_rev(fct_reorder( name_medal,seconds)))) +
+                   y = fct_rev(fct_reorder( name,seconds)))) +
   geom_segment(aes(x = 0,
                    xend = seconds,
-                   yend = fct_rev(fct_reorder( name_medal,seconds))),
+                   yend = fct_rev(fct_reorder( name,seconds))),
                color = "#6E92E0") +
-  geom_point(shape = 21,
-             fill = "#6E92E0",
-             color = "#6E92E0",
-             size = 1) +
+  geom_point(aes(color = as_factor( emoji_rank)),
+             size = 4) +
+  geom_text(aes(x = seconds,
+                label = emoji_rank),
+            size = 2.5,
+            color = "black",
+            alpha = .5)+
   geom_text(aes(x = seconds,
                 label = time),
             vjust = -.6,
@@ -133,6 +136,10 @@ plot <- ggplot(plot_data,
   theme_minimal() +
   ylab(NULL) +
   xlab(NULL) +
+  scale_color_manual(breaks = c("1","2","3",""),
+                     values = c("gold","#C0C0C0","#CD7F32",
+                               "#6E92E0"),
+                    guide = NULL) +
   theme(
     panel.grid = element_blank(),
     axis.text.x = element_blank()
