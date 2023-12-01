@@ -2,8 +2,6 @@ library(httr)
 library(tidyverse)
 library(slackr)
 library(googlesheets4)
-library(gargle)
-library(sodium)
 library(googledrive)
 
 # Google API ----
@@ -83,11 +81,88 @@ Results <- paste0("*",final_results_date_text,"*",
                   paste0(nyt_leaderboard_text1$nametime, 
                          collapse = ""))
 
+# plot ----
+plot_data <- textgraph |> 
+  mutate(period = ms(time)) |> 
+  mutate(seconds = seconds(period)) |> 
+  mutate(rank = min_rank(period)) |> 
+  arrange(period) |> 
+  mutate(emoji_rank = case_when(
+    rank == 1 ~ "1",
+    rank == 2 ~ "2",
+    rank == 3 ~ "3",
+    .default = ""
+  )) |> 
+  mutate(streak_text = if_else(rank == 1,
+                               if_else(streak > 3,
+                                       paste0("(",streak,"-day streak)"),
+                                       ""
+                               )
+                               ,
+                               "")) |> 
+  mutate(name_medal = ifelse(rank <= 3,
+                             paste0(name,"\n",emoji_rank),
+                             name))
+
+plot <- ggplot(plot_data,
+               aes(x = seconds,
+                   y = fct_rev(fct_reorder( name,seconds)))) +
+  geom_segment(aes(x = 0,
+                   xend = seconds,
+                   yend = fct_rev(fct_reorder( name,seconds))),
+               color = "#6E92E0") +
+  geom_point(aes(color = as_factor( emoji_rank)),
+             size = 4) +
+  geom_text(aes(x = seconds,
+                label = emoji_rank),
+            size = 2.5,
+            color = "black",
+            alpha = .5)+
+  geom_text(aes(x = seconds,
+                label = time),
+            vjust = -.6,
+            hjust = 1.15,
+            color = "black") +
+  geom_text(aes(x = seconds,
+                label = streak_text),
+            hjust = -.1,
+            color = "black") +
+  theme_minimal() +
+  ylab(NULL) +
+  xlab(NULL) +
+  scale_color_manual(breaks = c("1","2","3",""),
+                     values = c("gold","#C0C0C0","#CD7F32",
+                                "#6E92E0"),
+                     guide = NULL) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_blank()
+  )+
+  ggtitle(final_results_date_text)
+plot 
+
+players <- length(plot_data$name)
+height = players*3/7
+
+file <- tempfile( fileext = ".png")
+ggsave( file, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = height,
+        dpi = 320)
+
 # post data ----
 if (final_results_date == today) {
-  POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
-       encode = "json",
-       body =  list(text = Results,
-                    type = "mrkdwn")
-  )
+  # POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
+  #      encode = "json",
+  #      body =  list(text = Results,
+  #                   type = "mrkdwn")
+  # )
+
+slackr_upload(channels = "#test",
+              token = Sys.getenv("SLACK_TOKEN"),
+              title = "Leaderboard", 
+              filename = file)
+}
+if (file.exists("Rplots.pdf")) {
+  file.remove("Rplots.pdf")
 }

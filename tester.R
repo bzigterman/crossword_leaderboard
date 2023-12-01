@@ -138,8 +138,8 @@ plot <- ggplot(plot_data,
   xlab(NULL) +
   scale_color_manual(breaks = c("1","2","3",""),
                      values = c("gold","#C0C0C0","#CD7F32",
-                               "#6E92E0"),
-                    guide = NULL) +
+                                "#6E92E0"),
+                     guide = NULL) +
   theme(
     panel.grid = element_blank(),
     axis.text.x = element_blank()
@@ -163,12 +163,12 @@ if (final_results_date == today) {
        body =  list(text = Results,
                     type = "mrkdwn")
   )
+  
+  slackr_upload(channels = "#test",
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = "Leaderboard", 
+                filename = file)
 }
-slackr_upload(channels = "#test",
-              token = Sys.getenv("SLACK_TOKEN"),
-              title = "Leaderboard", 
-              filename = file)
-
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
 }

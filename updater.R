@@ -2,8 +2,6 @@ library(httr)
 library(tidyverse)
 library(rvest)
 library(googlesheets4)
-library(gargle)
-library(sodium)
 library(googledrive)
 
 # Google API ----
