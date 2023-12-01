@@ -141,13 +141,10 @@ plot <- ggplot(plot_data,
   ggtitle(final_results_date_text)
 plot 
 
-players <- length(plot_data$name)
-height = players*3/7
-
 file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
         bg = "white",
-        width = 3, height = height,
+        width = 3, height = 3,
         dpi = 320)
 
 # post data ----

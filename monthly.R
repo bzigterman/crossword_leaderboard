@@ -109,13 +109,10 @@ plot <- ggplot(fastest_time,
         axis.ticks.x = element_line() )
 plot
 
-players <- nrow( fastest_time |> distinct(name))
-height = players*3/7
-
 times_plot <- tempfile( fileext = ".png")
 ggsave( times_plot, plot = plot, device = "png", 
         bg = "white",
-        width = 3, height = height,
+        width = 3, height = 3,
         dpi = 320)
 
 # avg times ----
