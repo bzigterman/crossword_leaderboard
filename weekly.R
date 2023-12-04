@@ -79,14 +79,13 @@ plot <- ggplot(fastest_time,
   #              fill = "#e2e9f8")+
   geom_point(color = "#6E92E0",
              shape = 21,
-             alpha = .5,
              size = 2.5)+
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
                    y = 0,
                    yend = 0),
                color = "black") +
-  scale_fill_manual(values = c("#6E92E0","#E6B83D"),
+  scale_fill_manual(values = c("#6E92E07F","#E6B83D7F"),
                     guide = NULL) +
   theme_minimal()+
   ylab(NULL)+

@@ -82,14 +82,13 @@ plot <- ggplot(fastest_time,
                    y = fct_rev( fct_reorder( name,minutes))))+
   geom_quasirandom(color = "#6E92E0",
                    shape = 21,
-                   alpha = .5,
                    size = 1.75)+
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
                    y = 0,
                    yend = 0),
                color = "black") +
-  scale_fill_manual(values = c("#6E92E0","#E6B83D"),
+  scale_fill_manual(values = c("#6E92E07F","#E6B83D7F"),
                     guide = NULL) +
   theme_minimal()+
   ylab(NULL)+

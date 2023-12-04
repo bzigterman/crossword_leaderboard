@@ -79,7 +79,6 @@ plot <- ggplot(fastest_time,
   #              outlier.size = 0,
   #              fill = "#e2e9f8")+
   geom_quasirandom(color = "#6E92E0",
-                   alpha = .5,
                    shape = 21,
                    size = 1)+
   # geom_beeswarm(color = "#579C49",
@@ -95,7 +94,7 @@ plot <- ggplot(fastest_time,
                    y = 0,
                    yend = 0),
                color = "black") +
-  scale_fill_manual(values = c("#6E92E0","#E6B83D"),
+  scale_fill_manual(values = c("#6E92E07F","#E6B83D7F"),
                     guide = NULL) +
   theme_minimal()+
   ylab(NULL)+
