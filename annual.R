@@ -80,6 +80,7 @@ plot <- ggplot(fastest_time,
   #              fill = "#e2e9f8")+
   geom_quasirandom(color = "#6E92E0",
                    shape = 21,
+                   stroke = 0.075,
                    size = 1)+
   # geom_beeswarm(color = "#579C49",
   #               method = "square",

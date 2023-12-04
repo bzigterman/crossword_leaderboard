@@ -79,6 +79,7 @@ plot <- ggplot(fastest_time,
   #              fill = "#e2e9f8")+
   geom_point(color = "#6E92E0",
              shape = 21,
+             stroke = .5,
              size = 2.5)+
   geom_segment(aes(x = min(minutes),
                    xend = max(minutes),
