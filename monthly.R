@@ -102,7 +102,7 @@ times_plot <- tempfile( fileext = ".png")
 ggsave( times_plot, plot = plot, device = "png", 
         bg = "white",
         width = 3, height = 3,
-        dpi = 320)
+        dpi = 640)
 
 # avg times ----
 avg_times <- old_with_ranks |> 

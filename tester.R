@@ -157,7 +157,7 @@ file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
         bg = "white",
         width = 3, height = 3,
-        dpi = 320)
+        dpi = 640)
 
 # post data ----
 if (final_results_date == today) {

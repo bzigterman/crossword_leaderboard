@@ -99,7 +99,7 @@ times_plot <- tempfile( fileext = ".png")
 ggsave( times_plot, plot = plot, device = "png", 
         bg = "white",
         width = 3, height = 3,
-        dpi = 320)
+        dpi = 640)
 
 if (week(old_with_ranks$date[[1]]) == last_week) {
   POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
