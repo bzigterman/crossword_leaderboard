@@ -73,7 +73,7 @@ nyt_leaderboard_text1 <- textgraph |>
     .default = ""
   )) |> 
   mutate(streak_text = if_else(rank == 1,
-                               if_else(streak > 3,
+                               if_else(streak >= 3,
                                        paste0("(",streak,"-day streak)"),
                                        ""
                                )
@@ -100,12 +100,10 @@ plot_data <- textgraph |>
     .default = ""
   )) |> 
   mutate(streak_text = if_else(rank == 1,
-                               if_else(streak > 3,
-                                       paste0("(",streak,"-day streak)"),
-                                       ""
-                               )
-                               ,
-                               "")) |> 
+                               if_else(streak >= 3,
+                                       paste0(streak,"-day streak"),
+                                       NA),
+                               NA)) |> 
   mutate(name_medal = ifelse(rank <= 3,
                              paste0(name,"\n",emoji_rank),
                              name))
@@ -133,7 +131,7 @@ plot <- ggplot(plot_data,
             color = "black") +
   geom_text(aes(x = seconds,
                 label = streak_text),
-            hjust = -.1,
+            hjust = -.15,
             color = "black") +
   theme_minimal() +
   ylab(NULL) +
