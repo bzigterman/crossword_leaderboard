@@ -131,19 +131,21 @@ old_adding_streaks <- old_csv |>
   mutate(rank = min_rank(period)) |> 
   ungroup() |> 
   filter(rank == 1) |> 
-  select(name, date, rank) |> 
-  mutate(lagged = lag(name))  |> 
-  mutate(start = if_else(lagged == name,FALSE,TRUE)) 
-
-old_adding_streaks[1,"start"] <- TRUE
-
-streaks <- old_adding_streaks|> 
+  select(name, date) |> 
+  group_by(name) |> 
+  mutate(lag = lag(date)) |> 
+  mutate(start = if_else(lag == date-days(1),
+                         FALSE,TRUE)) |> 
   mutate(start_id = if_else(start,1,0)) |> 
+  drop_na() |> 
   mutate(streak_id = cumsum(start_id)) |> 
-  group_by(streak_id) |> 
+  group_by(name,streak_id) |> 
+  arrange(name,streak_id) |> 
   mutate(streak = row_number()) |> 
   ungroup() |> 
   select(name, date, streak)
+
+streaks <- old_adding_streaks
 
 old_csv_with_streaks <- full_join(old_csv, streaks) |> 
   mutate(month = month(date)) |> 
