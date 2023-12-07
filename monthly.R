@@ -134,10 +134,12 @@ old_adding_streaks <- old_csv |>
   select(name, date) |> 
   group_by(name) |> 
   mutate(lag = lag(date)) |> 
-  mutate(start = if_else(lag == date-days(1),
-                         FALSE,TRUE)) |> 
+  mutate(start = if_else(is.na(lag),
+                         TRUE,
+                         if_else(lag == date-days(1),
+                                 FALSE,
+                                 TRUE))) |> 
   mutate(start_id = if_else(start,1,0)) |> 
-  drop_na() |> 
   mutate(streak_id = cumsum(start_id)) |> 
   group_by(name,streak_id) |> 
   arrange(name,streak_id) |> 
