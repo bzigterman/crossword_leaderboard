@@ -164,6 +164,7 @@ if (final_results_date == today) {
   # )
   
   slackr_upload(channels = "#crossword",
+                initial_comment = Results,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = "Leaderboard", 
                 filename = file)

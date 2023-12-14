@@ -163,13 +163,14 @@ ggsave( file, plot = plot, device = "png",
 
 # post data ----
 if (final_results_date == today) {
-  POST(url =  Sys.getenv("SLACK_TEST_URL"),
-       encode = "json",
-       body =  list(text = Results,
-                    type = "mrkdwn")
-  )
+  # POST(url =  Sys.getenv("SLACK_TEST_URL"),
+  #      encode = "json",
+  #      body =  list(text = Results,
+  #                   type = "mrkdwn")
+  # )
   
   slackr_upload(channels = "#test",
+                initial_comment = Results,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = "Leaderboard", 
                 filename = file)
