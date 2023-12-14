@@ -175,13 +175,14 @@ Monthly_results <- paste0(wins_text,"\n",
                           longest_streak_text)
 
 if (month(fastest_time$date[[1]]) == last_month) {
-  POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
-       encode = "json",
-       body =  list(text = Monthly_results,
-                    type = "mrkdwn")
-  )
+  # POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
+  #      encode = "json",
+  #      body =  list(text = Monthly_results,
+  #                   type = "mrkdwn")
+  # )
   
   slackr_upload(channels = "#crossword",
+                initial_comment = Monthly_results,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0(last_month_text), 
                 filename = times_plot)

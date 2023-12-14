@@ -102,13 +102,14 @@ ggsave( times_plot, plot = plot, device = "png",
         dpi = 640)
 
 if (week(old_with_ranks$date[[1]]) == last_week) {
-  POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
-       encode = "json",
-       body =  list(text = wins_text,
-                    type = "mrkdwn")
-  )
+  # POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
+  #      encode = "json",
+  #      body =  list(text = wins_text,
+  #                   type = "mrkdwn")
+  # )
   
   slackr_upload(channels = "#crossword",
+                initial_comment = wins_text,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0("Week ",last_week_text), 
                 filename = times_plot)
