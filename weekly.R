@@ -17,16 +17,10 @@ old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Form Responses 1",
                       col_types = "TccD") |> 
   filter(date > today(tzone = "America/Chicago")-days(90)) |> 
-  mutate(week = week(date)) |> 
-  mutate(week = if_else(week == 1,
-                        53,
-                        week))
+  mutate(week = isoweek(date)) 
 
-current_week <- week(now(tzone = "America/Chicago"))
-last_week <- if_else(current_week == 1,
-                     53,
-                     current_week-1)
-last_week_text <- last_week
+current_week <- isoweek(now(tzone = "America/Chicago"))
+last_week <- isoweek(now(tzone = "America/Chicago")-weeks(1))
 
 old_with_ranks <- old_csv |>
   mutate(period = ms(time)) |> 
@@ -50,7 +44,7 @@ wins <- old_with_ranks |>
                               "")) |> 
   mutate(name_text = paste0(name,": ",n," ",emoji_rank,"\n")) 
 
-wins_text <- paste0("*Week ",last_week_text," wins*",
+wins_text <- paste0("*Week ",last_week," wins*",
                     "\n",
                     paste0(wins$name_text, 
                            collapse = ""))
@@ -93,7 +87,7 @@ plot <- ggplot(fastest_time,
                     guide = NULL) +
   theme_minimal()+
   ylab(NULL)+
-  ggtitle(paste0("Week ",last_week_text)) +
+  ggtitle(paste0("Week ",last_week)) +
   theme(panel.grid  = element_blank(),
         axis.ticks.x = element_line() )
 plot
@@ -111,7 +105,7 @@ if (week(old_with_ranks$date[[1]]) == last_week) {
   #                   type = "mrkdwn")
   # )
   
-  slackr_upload(channels = "#crossword",
+  slackr_upload(channels = "#test",
                 initial_comment = wins_text,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0("Week ",last_week_text), 
