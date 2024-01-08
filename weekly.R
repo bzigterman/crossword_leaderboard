@@ -16,7 +16,11 @@ gs4_auth(path = dec)
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Form Responses 1",
                       col_types = "TccD") |> 
-  filter(date > today(tzone = "America/Chicago")-days(90))
+  filter(date > today(tzone = "America/Chicago")-days(90)) |> 
+  mutate(week = week(date)) |> 
+  mutate(week = if_else(week == 1,
+                        53,
+                        week))
 
 current_week <- week(now(tzone = "America/Chicago"))
 last_week <- if_else(current_week == 1,
@@ -32,7 +36,6 @@ old_with_ranks <- old_csv |>
   arrange(date) |> 
   mutate(rank = min_rank(period)) |> 
   ungroup() |> 
-  mutate(week = week(date)) |> 
   filter(week == last_week) |> 
   select(!week) 
 
