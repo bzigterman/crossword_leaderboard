@@ -108,7 +108,7 @@ if (week(old_with_ranks$date[[1]]) == last_week) {
   slackr_upload(channels = "#test",
                 initial_comment = wins_text,
                 token = Sys.getenv("SLACK_TOKEN"),
-                title = paste0("Week ",last_week_text), 
+                title = paste0("Week ",last_week), 
                 filename = times_plot)
 }
 
