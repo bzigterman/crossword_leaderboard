@@ -105,7 +105,7 @@ if (isoweek(old_with_ranks$date[[1]]) == current_week) {
   #                   type = "mrkdwn")
   # )
   
-  slackr_upload(channels = "#test",
+  slackr_upload(channels = "#crossword",
                 initial_comment = wins_text,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0("Week ",current_week), 
