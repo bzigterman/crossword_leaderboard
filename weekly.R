@@ -30,7 +30,7 @@ old_with_ranks <- old_csv |>
   arrange(date) |> 
   mutate(rank = min_rank(period)) |> 
   ungroup() |> 
-  filter(week == last_week) |> 
+  filter(week == current_week) |> 
   select(!week) 
 
 wins <- old_with_ranks |> 
@@ -44,7 +44,7 @@ wins <- old_with_ranks |>
                               "")) |> 
   mutate(name_text = paste0(name,": ",n," ",emoji_rank,"\n")) 
 
-wins_text <- paste0("*Week ",last_week," wins*",
+wins_text <- paste0("*Week ",current_week," wins*",
                     "\n",
                     paste0(wins$name_text, 
                            collapse = ""))
@@ -87,7 +87,7 @@ plot <- ggplot(fastest_time,
                     guide = NULL) +
   theme_minimal()+
   ylab(NULL)+
-  ggtitle(paste0("Week ",last_week)) +
+  ggtitle(paste0("Week ",current_week)) +
   theme(panel.grid  = element_blank(),
         axis.ticks.x = element_line() )
 plot
@@ -98,7 +98,7 @@ ggsave( times_plot, plot = plot, device = "png",
         width = 3, height = 3,
         dpi = 640)
 
-if (week(old_with_ranks$date[[1]]) == last_week) {
+if (isoweek(old_with_ranks$date[[1]]) == current_week) {
   # POST(url =  Sys.getenv("SLACK_CROSSWORD_URL"),
   #      encode = "json",
   #      body =  list(text = wins_text,
@@ -108,7 +108,7 @@ if (week(old_with_ranks$date[[1]]) == last_week) {
   slackr_upload(channels = "#test",
                 initial_comment = wins_text,
                 token = Sys.getenv("SLACK_TOKEN"),
-                title = paste0("Week ",last_week), 
+                title = paste0("Week ",current_week), 
                 filename = times_plot)
 }
 
