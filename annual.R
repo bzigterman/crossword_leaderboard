@@ -99,7 +99,6 @@ plot <- ggplot(fastest_time,
                     guide = NULL) +
   theme_minimal()+
   ylab(NULL)+
-  ggtitle(paste0(last_year_text)) +
   theme(panel.grid  = element_blank(),
         axis.ticks.x = element_line())
 plot
@@ -175,6 +174,84 @@ longest_streak_text <- if_else(longest_streak > 2,
                                              collapse = "")),
                                "")
 
+# personalized ----
+mine <- old_csv |> 
+  mutate(year = year(date)) |> 
+  filter(year == last_year) |> 
+  #filter(name == "Ben") |> 
+  mutate(weekday = as.character( wday(date)) )|> 
+  mutate(weekday = case_match(
+    weekday,
+    "1" ~ "M",
+    "2" ~ "Tu",
+    "3" ~ "W",
+    "4" ~ "Th",
+    "5" ~ "F",
+    "6" ~ "Sa",
+    "7" ~ "Su"
+  )) |> 
+  mutate(weekday = fct_relevel(weekday, "M","Tu","W","Th","F","Sa","Su")) |> 
+  mutate(week = isoweek(date))|>
+  mutate(period = ms(time)) |> 
+  mutate(seconds = seconds(period)) |> 
+  mutate(minutes = as.numeric(seconds/60)) |> 
+  mutate(saturday_check = case_when(
+    weekday == 7 ~ "Saturday",
+    .default = "Non-Saturday"
+  )) |> 
+  group_by(date) |> 
+  arrange(period) |> 
+  arrange(date) |> 
+  mutate(rank = as_factor( min_rank(period))) |> 
+  ungroup() 
+
+weekday_medians <- mine |> 
+  group_by(name,weekday) |> 
+  mutate(weekday_median = median(minutes)) |> 
+  ungroup() |> 
+  select(name,weekday, weekday_median) |> 
+  distinct()
+
+plot <- ggplot(weekday_medians)+
+  geom_col(aes(x = weekday,
+               y = weekday_median),
+           fill = "#6E92E0",
+           color = "white")+
+  theme_minimal()+
+  ylab("Median time")+
+  xlab(NULL)+
+  theme(panel.grid.minor.x  = element_blank(),
+        panel.grid.minor.y  = element_blank(),
+        axis.ticks.x = element_line()) +
+  facet_wrap(~name)
+plot
+weekday_median_plot <- tempfile( fileext = ".png")
+ggsave( weekday_median_plot, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = 3,
+        dpi = 640)
+
+
+plot <- ggplot(mine,
+               aes(x = rank))+
+  stat_count( fill = "#6E92E0",
+              color = "white") +
+  facet_wrap(~name)+
+  xlab("Rank")+
+  ylab("Count") +
+  theme_minimal()+
+  theme(panel.grid.minor.x  = element_blank(),
+        panel.grid.minor.y  = element_blank(),
+        axis.ticks.x = element_line())
+plot
+ranks_plot <- tempfile( fileext = ".png")
+ggsave( ranks_plot, plot = plot, device = "png", 
+        bg = "white",
+        width = 3, height = 3,
+        dpi = 640)
+
+
+# combined ----
 
 Annual_results <- paste0(wins_text,"\n",
                          fastest_time_text,"\n",
@@ -188,11 +265,23 @@ if (year(fastest_time$date[[1]]) == last_year) {
   #                   type = "mrkdwn")
   # )
   
-  slackr_upload(channels = "#crossword",
-                initial_comment = Annual_results,
+  slackr_upload(channels = "#test",
+                initial_comment = wins_text,
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = paste0(last_year_text), 
+                filename = ranks_plot )
+  slackr_upload(channels = "#test",
+                initial_comment = avg_times_text,
+                token = Sys.getenv("SLACK_TOKEN"),
+                title = paste0(last_year_text), 
+                filename = weekday_median_plot)
+  slackr_upload(channels = "#test",
+                initial_comment = paste0(fastest_time_text,"\n",
+                                         longest_streak_text),
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0(last_year_text), 
                 filename = times_plot)
+  
 }
 
 if (file.exists("Rplots.pdf")) {
