@@ -18,11 +18,11 @@ cookie <- Sys.getenv("NYT_S")
 NYT_API_ROOT <-  "https://www.nytimes.com/svc/crosswords"
 date  <-  today(tzone = "America/Chicago") #"2024-01-11" 
 leaderboard_endpoint <-  paste0(NYT_API_ROOT,
-                              "/v6/leaderboard/mini/",date,".json")
+                                "/v6/leaderboard/mini/",date,".json")
 
 response <- GET(leaderboard_endpoint,
                 set_cookies("NYT-S" = cookie)
-                )
+)
 nyt_content <- content(response)
 nyt_json <- toJSON( nyt_content$data)
 nyt <- fromJSON(nyt_json, flatten = TRUE) |> 
@@ -33,7 +33,7 @@ name <- unlist(nyt$name) |>
   head(length(time))
 nyt_new <- cbind(name,time) |> 
   as_tibble()
- 
+
 nyt_crossword_date <- date
 nyt_crossword_date_text <- strftime(x = nyt_crossword_date, 
                                     tz = "US/Central",
