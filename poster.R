@@ -3,6 +3,7 @@ library(tidyverse)
 library(slackr)
 library(googlesheets4)
 library(googledrive)
+library(jsonlite)
 
 # Google API ----
 json <- Sys.getenv("TOKEN_KEY") |> 
