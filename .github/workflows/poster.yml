@@ -16,6 +16,7 @@ jobs:
       TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
       SHEET_ID: = ${{ secrets.SHEET_ID }}
+      NYT_S: ${{ secrets.NYT_S }}
     steps:
       - uses: actions/checkout@v3
       
