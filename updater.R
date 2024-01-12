@@ -3,6 +3,7 @@ library(tidyverse)
 library(rvest)
 library(googlesheets4)
 library(googledrive)
+library(jsonlite)
 
 # Google API ----
 json <- Sys.getenv("TOKEN_KEY") |> 
@@ -13,50 +14,40 @@ dec <- rawToChar( jsonlite::base64_dec( json))
 gs4_auth(path = dec)
 
 # Get leaderboard ----
+cookie <- Sys.getenv("NYT_S") 
+NYT_API_ROOT <-  "https://www.nytimes.com/svc/crosswords"
+date  <-  today(tzone = "America/Chicago") #"2024-01-11" 
+leaderboard_endpoint <-  paste0(NYT_API_ROOT,
+                              "/v6/leaderboard/mini/",date,".json")
 
-url <- "https://www.nytimes.com/puzzles/leaderboards/"
-cookie <- Sys.getenv("NYT_S")
-nyt <- GET(url,
-           set_cookies("NYT-S" = cookie)
-)
-nyt_content <- content(nyt)
-
-nyt_crossword_date <- read_html(nyt) |> 
-  html_element(".lbd-type__date") |> 
-  html_text2() |> 
-  mdy(tz = "America/Chicago")
+response <- GET(leaderboard_endpoint,
+                set_cookies("NYT-S" = cookie)
+                )
+nyt_content <- content(response)
+nyt_json <- toJSON( nyt_content$data)
+nyt <- fromJSON(nyt_json, flatten = TRUE) |> 
+  flatten() |> 
+  janitor::clean_names() 
+time <- unlist(nyt$score_seconds_spent_solving)
+name <- unlist(nyt$name) |> 
+  head(length(time))
+nyt_new <- cbind(name,time) |> 
+  as_tibble()
+ 
+nyt_crossword_date <- date
 nyt_crossword_date_text <- strftime(x = nyt_crossword_date, 
                                     tz = "US/Central",
                                     format = "%A, %B %d")
 
-today <- today(tzone = "America/Chicago")
-
-names <- read_html(nyt) |> 
-  html_elements(".lbd-board__items") |> 
-  html_elements(".lbd-score__name") |> 
-  html_text2() |> 
-  as_tibble() |> 
-  mutate(name = value) |> 
-  select(!value)
-
-times <- read_html(nyt) |> 
-  html_elements(".lbd-board__items") |> 
-  html_elements(".lbd-score__time") |> 
-  html_text2() |> 
-  as_tibble() |> 
-  mutate(time = value) |> 
-  select(!value)
-
-if (nrow(times) < nrow(names)) {
-  times <- times |>  
-    add_row()
-}
-
-nyt_leaderboard <- cbind(names,times) |> 
-  mutate(name = if_else(name == "Ben (you)","Ben",name)) |> 
-  mutate(date = as_date( nyt_crossword_date, tz = "America/Chicago")) |> 
-  mutate(time = if_else( is.na(time),"--",time)) |> 
-  filter(time != "--")
+nyt_leaderboard <- nyt_new |> 
+  mutate(date = date) |> 
+  mutate(time = as.numeric( time)) |> 
+  mutate(sec = time %% 60,
+         min = floor(time / 60),
+         minsec = paste0(min,":",sec)) |> 
+  select(-sec, -min) |> 
+  mutate(time = minsec) |> 
+  select(-minsec)
 
 # write new results ----
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),

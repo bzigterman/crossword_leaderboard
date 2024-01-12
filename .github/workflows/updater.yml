@@ -2,8 +2,6 @@ name: updater
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/5 * * * *'
   push:
     paths:
       - 'updater.R'
