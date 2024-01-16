@@ -41,7 +41,10 @@ nyt_crossword_date_text <- strftime(x = nyt_crossword_date,
 nyt_leaderboard <- nyt_new |> 
   mutate(date = date) |> 
   mutate(time = as.numeric( time)) |> 
-  mutate(sec = time %% 60,
+  mutate(sec = str_pad(time %% 60,
+                       width = 2,
+                       side = c("left"),
+                       pad = "0"),
          min = floor(time / 60),
          minsec = paste0(min,":",sec)) |> 
   select(-sec, -min) |> 
