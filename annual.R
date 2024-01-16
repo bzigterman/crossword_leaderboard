@@ -13,7 +13,6 @@ dec <- rawToChar( jsonlite::base64_dec( json))
 gs4_auth(path = dec)
 
 # read data ----
-
 old_csv <- read_sheet(ss = Sys.getenv("SHEET_ID"),
                       sheet = "Form Responses 1",
                       col_types = "TccD")
@@ -250,9 +249,7 @@ ggsave( ranks_plot, plot = plot, device = "png",
         width = 3, height = 3,
         dpi = 640)
 
-
 # combined ----
-
 Annual_results <- paste0(wins_text,"\n",
                          fastest_time_text,"\n",
                          avg_times_text,"\n",
