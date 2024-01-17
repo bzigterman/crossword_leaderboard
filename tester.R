@@ -25,13 +25,15 @@ response <- GET(leaderboard_endpoint,
 nyt_content <- content(response)
 nyt_json <- toJSON( nyt_content$data)
 nyt <- fromJSON(nyt_json, flatten = TRUE) |> 
-  flatten() |> 
+  unnest(cols = c(userID,name,rank,me,
+                  score.secondsSpentSolving,
+                  score.squaresRevealed)) |> 
   janitor::clean_names() 
-time <- unlist(nyt$score_seconds_spent_solving)
-name <- unlist(nyt$name) |> 
-  head(length(time))
-nyt_new <- cbind(name,time) |> 
-  as_tibble()
+nyt_new <- nyt |> 
+  select(name,score_seconds_spent_solving) |> 
+  drop_na() |> 
+  mutate(time = score_seconds_spent_solving) |> 
+  select(name,time)
 
 nyt_crossword_date <- date
 nyt_crossword_date_text <- strftime(x = nyt_crossword_date, 
