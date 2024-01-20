@@ -26,8 +26,7 @@ nyt_content <- content(response)
 nyt_json <- toJSON( nyt_content$data)
 nyt <- fromJSON(nyt_json, flatten = TRUE) |> 
   unnest(cols = c(userID,name,rank,me,
-                  score.secondsSpentSolving,
-                  score.squaresRevealed)) |> 
+                  score.secondsSpentSolving)) |> 
   janitor::clean_names() 
 nyt_new <- nyt |> 
   select(name,score_seconds_spent_solving) |> 
