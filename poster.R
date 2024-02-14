@@ -191,6 +191,7 @@ plot <- ggplot(plot_data,
                 label = streak_text),
             hjust = -.15,
             color = "black") +
+  coord_cartesian(clip="off") +
   theme_minimal() +
   ylab(NULL) +
   xlab(NULL) +
