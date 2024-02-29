@@ -212,6 +212,9 @@ plot
 
 players <- length(plot_data$name)
 height = .3 + players*(2.7/7)
+height = ifelse(height >3,
+                3,
+                height)
 
 file <- tempfile( fileext = ".png")
 ggsave( file, plot = plot, device = "png", 
