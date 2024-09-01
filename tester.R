@@ -15,7 +15,7 @@ gs4_auth(path = dec)
 # Get leaderboard ----
 cookie <- Sys.getenv("NYT_S") 
 NYT_API_ROOT <-  "https://www.nytimes.com/svc/crosswords"
-date  <-  today(tzone = "America/Chicago") #"2024-01-11" 
+date  <-  today(tzone = "America/Chicago") #as.Date("2024-08-31") 
 leaderboard_endpoint <-  paste0(NYT_API_ROOT,
                                 "/v6/leaderboard/mini/",date,".json")
 
