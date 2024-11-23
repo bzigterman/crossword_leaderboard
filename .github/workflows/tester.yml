@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-tester:
-    runs-on: macOS-latest
+    runs-on: macos-13
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
