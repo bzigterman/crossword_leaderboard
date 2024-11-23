@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-poster:
-    runs-on: macOS-latest
+    runs-on: macOS-13
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
