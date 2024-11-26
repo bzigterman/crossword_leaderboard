@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-monthly:
-    runs-on: macos-13
+    runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SLACK_TEST_URL: ${{ secrets.SLACK_TEST_URL }}
