@@ -262,17 +262,17 @@ if (year(fastest_time$date[[1]]) == last_year) {
   #                   type = "mrkdwn")
   # )
   
-  slackr_upload(channels = "#test",
+  slackr_upload(channels = "#crossword",
                 initial_comment = wins_text,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0(last_year_text), 
                 filename = ranks_plot )
-  slackr_upload(channels = "#test",
+  slackr_upload(channels = "#crossword",
                 initial_comment = avg_times_text,
                 token = Sys.getenv("SLACK_TOKEN"),
                 title = paste0(last_year_text), 
                 filename = weekday_median_plot)
-  slackr_upload(channels = "#test",
+  slackr_upload(channels = "#crossword",
                 initial_comment = paste0(fastest_time_text,"\n",
                                          longest_streak_text),
                 token = Sys.getenv("SLACK_TOKEN"),
