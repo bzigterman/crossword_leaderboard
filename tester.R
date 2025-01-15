@@ -16,6 +16,7 @@ gs4_auth(path = dec)
 cookie <- Sys.getenv("NYT_S") 
 NYT_API_ROOT <-  "https://www.nytimes.com/svc/crosswords"
 date  <-  today(tzone = "America/Chicago") #as.Date("2024-08-31") 
+yesterday <- date - days(1)
 leaderboard_endpoint <-  paste0(NYT_API_ROOT,
                                 "/v6/leaderboard/mini/",date,".json")
 
@@ -107,10 +108,30 @@ streaks <- old_adding_streaks
 
 old_csv_with_streaks <- full_join(old_csv, streaks)
 
-today <- force_tz(today(tzone = "America/Chicago"),tzone = "America/Chicago")
+today <- date # force_tz(today(tzone = "America/Chicago"),tzone = "America/Chicago")
 
 final_results <- old_csv_with_streaks |> 
   filter(date == today)
+final_results_yesterday <- old_csv_with_streaks |> 
+  filter(date == yesterday)
+broken_streak_length <- if_else(
+  final_results_yesterday$streak[[1]] > final_results$streak[[1]],
+  paste0(final_results_yesterday$streak[[1]]),
+  paste0("")
+)
+broken_streak_name <- if_else(
+  final_results_yesterday$streak[[1]] > final_results$streak[[1]],
+  paste0(final_results_yesterday$name[[1]]),
+  paste0("")
+)
+
+final_results <- final_results |> 
+  mutate(broken_streak = if_else(
+    name == broken_streak_name,
+    broken_streak_length,NA
+  ))
+
+
 final_results_date <- force_tz(as_date( final_results$date[[1]],
                                         tz = "America/Chicago"),
                                tzone = "America/Chicago")
@@ -138,15 +159,20 @@ nyt_leaderboard_text1 <- textgraph |>
     rank == 3 ~ ":third_place_medal:",
     .default = ""
   )) |> 
-  mutate(streak_text = if_else(rank == 1,
-                               if_else(streak >= 3,
-                                       paste0("(",streak,"-day streak)"),
-                                       ""
-                               )
-                               ,
-                               "")) |> 
-  select(name,time,rank, emoji_rank, streak_text,chart) |> 
-  mutate(nametime = paste0(name,": ",time," ",emoji_rank," ",streak_text,"\n")) |> 
+  mutate(streak_text = 
+           if_else(rank == 1,
+                   if_else(streak >= 3,
+                           paste0("(",streak,"-day streak)"),
+                           "" ) ,
+                   "")) |> 
+  mutate(broken_streak_text = 
+           if_else(!is.na(broken_streak),
+                   if_else(broken_streak > 2,
+                           paste0("(",broken_streak,"-day streak broken)"),
+                           "" ) ,
+                   "")) |> 
+  select(name,time,rank, emoji_rank, streak_text,broken_streak_text,chart) |> 
+  mutate(nametime = paste0(name,": ",time," ",emoji_rank," ",streak_text,broken_streak_text,"\n")) |> 
   select(nametime) 
 Results <- paste0("*",final_results_date_text,"*",
                   "\n",
