@@ -33,6 +33,20 @@ old_with_ranks <- old_csv |>
   filter(week == current_week) |> 
   select(!week) 
 
+df_week <- old_with_ranks
+
+ranking_counts <- df_week %>%
+  filter(rank <= 3) %>%  
+  count(name, rank) %>%
+  mutate(Placement = case_when(
+    rank == 1 ~ ":first_place_medal:",
+    rank == 2 ~ ":second_place_medal:",
+    rank == 3 ~ ":third_place_medal:"
+  )) %>%
+  uncount(n) %>%  # Expand rows based on count
+  group_by(name) %>%
+  summarize(Placements = str_c(Placement, collapse = ""))  # Concatenate results
+
 wins <- old_with_ranks |> 
   filter(rank == 1) |> 
   select(!date) |> 
@@ -40,13 +54,45 @@ wins <- old_with_ranks |>
   arrange(desc(n))|> 
   select(name,n) |> 
   mutate(rank = min_rank(desc(n))) |> 
-  mutate(emoji_rank = if_else(rank == 1,":crown:",
-                              "")) |> 
-  mutate(name_text = paste0(name,": ",n," ",emoji_rank,"\n")) 
+  rename(firsts = n) |> 
+  select(name,firsts)
+
+silvers <- old_with_ranks |> 
+  filter(rank == 2) |> 
+  select(!date) |> 
+  count(name) |> 
+  arrange(desc(n))|> 
+  select(name,n) |> 
+  mutate(rank = min_rank(desc(n))) |> 
+  rename(seconds = n) |> 
+  select(name,seconds)
+
+bronzes <- old_with_ranks |> 
+  filter(rank == 3) |> 
+  select(!date) |> 
+  count(name) |> 
+  arrange(desc(n))|> 
+  select(name,n) |> 
+  mutate(rank = min_rank(desc(n))) |> 
+  rename(thirds = n) |> 
+  select(name,thirds)
+
+combined <- left_join(ranking_counts,wins) |> 
+  left_join(silvers) |> 
+  left_join(bronzes) |> 
+  arrange(desc(thirds)) |> 
+  arrange(desc(seconds)) |> 
+  arrange(desc(firsts))
+
+
+text <- combined |> 
+  mutate(emoji_rank = Placements) |> 
+  mutate(name_text = paste0(name,": ",emoji_rank,"\n")) 
+
 
 wins_text <- paste0("*Week ",current_week," wins*",
                     "\n",
-                    paste0(wins$name_text, 
+                    paste0(text$name_text, 
                            collapse = ""))
 # fastest times ----
 fastest_time <- old_with_ranks |> 
@@ -72,8 +118,6 @@ plot <- ggplot(fastest_time,
                aes(x = minutes,
                    fill = saturday_check,
                    y = fct_rev( fct_reorder( name,minutes))))+
-  # geom_boxplot(color = "#6E92E0",
-  #              fill = "#e2e9f8")+
   geom_point(color = "#6E92E0",
              shape = 21,
              stroke = .5,
