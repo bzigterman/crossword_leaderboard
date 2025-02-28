@@ -10,5 +10,4 @@ install.packages("janitor")
 install.packages("remotes")
 remotes::install_github("mrkaye97/slackr")
 
-update.packages(ask = FALSE,
-                checkBuilt = TRUE)
+update.packages(ask = FALSE, checkBuilt = TRUE)
