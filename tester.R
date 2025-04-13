@@ -112,9 +112,15 @@ old_csv_with_streaks <- full_join(old_csv, streaks)
 today <- date # force_tz(today(tzone = "America/Chicago"),tzone = "America/Chicago")
 
 final_results <- old_csv_with_streaks |>
-  filter(date == today)
+  filter(date == today) |>
+  mutate(period = ms(time)) |>
+  mutate(seconds = seconds(period)) |>
+  arrange(seconds)
 final_results_yesterday <- old_csv_with_streaks |>
-  filter(date == yesterday)
+  filter(date == yesterday) |>
+  mutate(period = ms(time)) |>
+  mutate(seconds = seconds(period)) |>
+  arrange(seconds)
 broken_streak_length <- if_else(
   final_results_yesterday$streak[[1]] > final_results$streak[[1]],
   paste0(final_results_yesterday$streak[[1]]),
