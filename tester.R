@@ -11,7 +11,7 @@ dec <- rawToChar(jsonlite::base64_dec(json))
 
 gs4_auth(path = dec)
 
-# Get leaderboard ----
+# Get Leaderboard ----
 cookie <- Sys.getenv("NYT_S")
 NYT_API_ROOT <- "https://www.nytimes.com/svc/crosswords"
 date <- today(tzone = "America/Chicago") #as.Date("2024-08-31")
