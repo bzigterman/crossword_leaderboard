@@ -134,10 +134,12 @@ broken_streak_name <- if_else(
 )
 final_results <- final_results |>
   mutate(
-    broken_streak = if_else(
-      name == broken_streak_name,
-      broken_streak_length,
-      NA
+    broken_streak = as.numeric(
+      if_else(
+        name == broken_streak_name,
+        broken_streak_length,
+        NA
+      )
     )
   )
 
