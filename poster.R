@@ -1,6 +1,7 @@
 library(httr)
 library(tidyverse)
 library(slackr)
+library(readr)
 library(googlesheets4)
 library(googledrive)
 library(jsonlite)
@@ -311,6 +312,7 @@ if (final_results_date == today) {
     title = "Leaderboard",
     filename = file
   )
+  write_lines(date, "latest.md")
 }
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")

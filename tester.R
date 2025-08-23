@@ -3,6 +3,7 @@ library(tidyverse)
 library(slackr)
 library(googlesheets4)
 library(jsonlite)
+library(readr)
 
 # Google API ----
 json <- Sys.getenv("TOKEN_KEY") |>
@@ -329,6 +330,7 @@ if (final_results_date == today) {
     title = "Leaderboard",
     filename = file
   )
+  write_lines(date, "latest.md")
 }
 if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
